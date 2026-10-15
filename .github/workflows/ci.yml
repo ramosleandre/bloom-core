@@ -1,0 +1,23 @@
+# Lancée à chaque PR et à chaque push sur main. Le job `check` est obligatoire pour merger
+# (protection de la branche main). Son historique (onglet Actions) est une preuve O2.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: make setup
+      - run: make check
+      - name: Banc de décision (backends hors ligne, jeu d'exemple)
+        run: make bench out=lab/results/ci
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bench
+          path: lab/results/ci
