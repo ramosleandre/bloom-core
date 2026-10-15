@@ -1,4 +1,4 @@
-"""`make run` doit toujours marcher : c'est la première chose qu'une nouvelle personne lance."""
+"""`make run` must always work: it is the first thing a newcomer runs."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from bloom.app import demo
 from bloom.core.contracts import RunStatus
 
 
-async def test_la_demo_tourne_et_ecrit_l_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_the_demo_runs_and_writes_the_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     audit = tmp_path / "audit.jsonl"
     monkeypatch.setenv("BLOOM_AUDIT_PATH", str(audit))
     run = await demo()

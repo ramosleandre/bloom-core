@@ -1,13 +1,13 @@
-"""Contrats du corps : les seuls types qui traversent une frontière de bloc.
+"""Core contracts: the only types that cross a block boundary.
 
-Lire d'abord docs/architecture.md (section « Les contrats »). Règles :
-- des types et des façades (Protocol) uniquement, aucune logique métier
-  (la logique de sécurité vit dans policy.py) ;
-- frozen + extra="forbid" : un champ inconnu est une erreur, pas un oubli silencieux ;
-- modifier ce fichier = PR avec le label `contrat`, relue par les owners des blocs concernés.
-  Ajouter un champ optionnel est sans risque ; renommer ou retirer casse les autres blocs.
+Read docs/architecture.md first (section "Contracts"). Rules:
+- types and facades (Protocol) only, no business logic
+  (safety logic lives in policy.py);
+- frozen + extra="forbid": an unknown field is an error, not a silent omission;
+- changing this file = PR with the `contract` label, reviewed by the owners of the affected blocks.
+  Adding an optional field is safe; renaming or removing one breaks the other blocks.
 
-Les types TypeScript du shell (bloc D) seront générés depuis ces modèles, jamais écrits à la main.
+The shell's TypeScript types (block D) will be generated from these models, never written by hand.
 """
 
 from __future__ import annotations
@@ -24,44 +24,44 @@ class Frozen(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
 
-# ── Déclencheur et observation : produits par D (raccourci) puis par C (écran) ──
+# ── Trigger and observation: produced by D (hotkey), then by C (screen) ──
 
 
 class Trigger(Frozen):
     id: UUID = Field(default_factory=uuid4)
-    kind: Literal["hotkey"]  # V1 : le raccourci clavier uniquement
-    at: datetime  # horodaté par le shell à l'appui : début de la latence mesurée par PERF
+    kind: Literal["hotkey"]  # V1: the hotkey only
+    at: datetime  # stamped by the shell on key press: start of the latency measured by PERF
 
 
 class Observation(Frozen):
-    """Ce que l'appareil perçoit au moment du raccourci. Brut, pas encore filtré."""
+    """What the device perceives when the hotkey is pressed. Raw, not filtered yet."""
 
     trigger_id: UUID
-    app_bundle_id: str  # ex. "com.apple.mail"
+    app_bundle_id: str  # e.g. "com.apple.mail"
     window_title: str | None = None
     selected_text: str | None = None
     url: str | None = None
     captured_at: datetime
 
 
-# ── Contexte : produit par B ──
+# ── Context: produced by B ──
 
 
 class Sensitivity(IntEnum):
     PUBLIC = 0
-    PERSONAL = 1  # peut aller vers un backend distant que la policy autorise
-    LOCAL_ONLY = 2  # ne quitte jamais la machine
+    PERSONAL = 1  # may go to a remote backend that the policy allows
+    LOCAL_ONLY = 2  # never leaves the machine
 
 
 class Trust(StrEnum):
-    USER = "user"  # saisi ou choisi par l'utilisateur, préférences
-    SYSTEM = "system"  # produit par Bloom ou par l'OS (nom de l'app active)
-    UNTRUSTED = "untrusted"  # contenu tiers (mail reçu, page web) : vecteur d'injection
+    USER = "user"  # typed or chosen by the user, preferences
+    SYSTEM = "system"  # produced by Bloom or by the OS (name of the active app)
+    UNTRUSTED = "untrusted"  # third-party content (received email, web page): injection vector
 
 
 class Fragment(Frozen):
     content: str
-    # Convention : "device.app", "device.window", "device.selection", "device.url",
+    # Convention: "device.app", "device.window", "device.selection", "device.url",
     # "stm", "ltm:<id>", "prefs"
     source: str
     sensitivity: Sensitivity
@@ -73,7 +73,7 @@ class ContextBundle(Frozen):
     request_id: UUID
     fragments: list[Fragment]
     budget_tokens: int
-    dropped: list[str] = Field(default_factory=list)  # sources coupées par le budget
+    dropped: list[str] = Field(default_factory=list)  # sources cut by the budget
 
     @property
     def max_sensitivity(self) -> Sensitivity:
@@ -84,21 +84,21 @@ class ContextBundle(Frozen):
         return any(f.trust is Trust.UNTRUSTED for f in self.fragments)
 
 
-# ── Décision : questions posées aux modèles par A ──
+# ── Decision: questions asked to the models by A ──
 
 
 class Question(Frozen):
-    """Calquée sur l'interface que les modèles « System 1 » standardisent (choice / score / bool)."""
+    """Modeled on the interface that "System 1" models standardize (choice / score / bool)."""
 
     id: str
     kind: Literal["choice", "score", "bool"]
     prompt: str
-    choices: list[str] = Field(default_factory=list)  # requis si kind == "choice"
+    choices: list[str] = Field(default_factory=list)  # required if kind == "choice"
 
 
 class Decision(Frozen):
     question_id: str
-    choice: str | None = None  # None = le backend n'a pas d'avis
+    choice: str | None = None  # None = the backend has no opinion
     score: float | None = None
     probs: dict[str, float] = Field(default_factory=dict)
     confidence: float
@@ -106,33 +106,33 @@ class Decision(Frozen):
     latency_ms: int
 
 
-# ── Actions : décrites, préparées et exécutées par C ──
+# ── Actions: described, prepared and executed by C ──
 
 
 class Criticality(IntEnum):
-    """Ordonnée par « dégâts si on se trompe ». Le plancher est déclaré par l'action ;
-    un modèle peut le monter, jamais le descendre (policy.effective_criticality)."""
+    """Ordered by "damage if we get it wrong". The floor is declared by the action;
+    a model can raise it, never lower it (policy.effective_criticality)."""
 
-    SAFE = 0  # lecture, résumé, aucun effet de bord
-    REVERSIBLE = 1  # écrit en local, annulable (brouillon, note, événement)
-    DESTRUCTIVE = 2  # supprime ou écrase en local
-    EXTERNAL = 3  # sort de la machine (envoyer, publier, payer) : irréversible
+    SAFE = 0  # read, summary, no side effect
+    REVERSIBLE = 1  # writes locally, can be undone (draft, note, event)
+    DESTRUCTIVE = 2  # deletes or overwrites locally
+    EXTERNAL = 3  # leaves the machine (send, publish, pay): irreversible
 
 
 class ActionDescriptor(Frozen):
-    """Face publique d'une action : ce que voient le modèle de décision et le menu."""
+    """Public face of an action: what the decision model and the menu see."""
 
-    id: str  # ex. "reply.draft"
-    label: str  # libellé affiché dans le pie menu
+    id: str  # e.g. "reply.draft"
+    label: str  # label shown in the pie menu
     floor: Criticality
-    needs_generation: bool = False  # ses arguments exigent un appel au modèle génératif
+    needs_generation: bool = False  # its arguments require a call to the generative model
 
 
 class ResolvedAction(Frozen):
     action_id: str
     args: dict[str, Any]
-    preview: str  # exactement ce qui va se passer, lisible par un humain
-    generated_by: str | None = None  # model_id si un LLM a écrit une partie des arguments
+    preview: str  # exactly what is going to happen, human-readable
+    generated_by: str | None = None  # model_id if an LLM wrote part of the arguments
 
 
 class ActionResult(Frozen):
@@ -148,20 +148,20 @@ class Candidate(Frozen):
 
 
 class ActionPlan(Frozen):
-    """Ce qui sort du classement et part vers le pie menu."""
+    """What comes out of ranking and goes to the pie menu."""
 
     request_id: UUID
-    candidates: list[Candidate]  # triés par probabilité décroissante
-    decided_by: str  # model_id du backend qui a répondu
+    candidates: list[Candidate]  # sorted by decreasing probability
+    decided_by: str  # model_id of the backend that answered
     latency_ms: int
 
 
-# ── Interface : échangés avec D ──
+# ── Interface: exchanged with D ──
 
 
 class MenuChoice(Frozen):
-    action_id: str | None  # None = l'utilisateur a fermé le menu
-    shown_at: datetime  # menu réellement visible : fin de la latence mesurée par PERF
+    action_id: str | None  # None = the user closed the menu
+    shown_at: datetime  # menu actually visible: end of the latency measured by PERF
 
 
 class ApprovalRequest(Frozen):
@@ -169,7 +169,7 @@ class ApprovalRequest(Frozen):
     action_id: str
     effective: Criticality
     preview: str
-    reasons: list[str]  # pourquoi on demande : affiché tel quel à l'utilisateur
+    reasons: list[str]  # why we ask: shown as is to the user
     expires_at: datetime
 
 
@@ -179,7 +179,7 @@ class ApprovalResponse(Frozen):
     edited_args: dict[str, Any] | None = None
 
 
-# ── Run : tenu par le corps, écrit dans l'audit, lu par le lab ──
+# ── Run: held by the core, written to the audit, read by the lab ──
 
 
 class RunStatus(StrEnum):
@@ -193,7 +193,7 @@ class RunStatus(StrEnum):
 
 
 class RunState(Frozen):
-    """Sérialisable dès le premier jour : c'est ce qui permettra de suspendre et reprendre un run."""
+    """Serializable from day one: this is what will let a run be suspended and resumed."""
 
     run_id: UUID = Field(default_factory=uuid4)
     trigger: Trigger
@@ -205,27 +205,27 @@ class RunState(Frozen):
     approval: ApprovalResponse | None = None
     result: ActionResult | None = None
     error: str | None = None
-    timings_ms: dict[str, int] = Field(default_factory=dict)  # par étape : outillage de PERF
+    timings_ms: dict[str, int] = Field(default_factory=dict)  # per step: PERF tooling
 
 
-# ── Façades des blocs (ports). Implémentées par les blocs, appelées par le corps. ──
+# ── Block facades (ports). Implemented by the blocks, called by the core. ──
 
 
 class DecisionPort(Protocol):
-    """A : un backend de décision (Jev, Laya, règles...). Un seul fichier par backend,
-    dans bloom/decision/adapters/ ; aucun autre module n'importe un SDK de modèle."""
+    """A: a decision backend (Jev, Laya, rules...). One file per backend,
+    in bloom/decision/adapters/; no other module imports a model SDK."""
 
     @property
     def model_id(self) -> str: ...
 
     @property
-    def max_sensitivity(self) -> Sensitivity: ...  # donnée la plus sensible qu'il a le droit de voir
+    def max_sensitivity(self) -> Sensitivity: ...  # most sensitive data it is allowed to see
 
     async def decide(self, bundle: ContextBundle, question: Question) -> Decision: ...
 
 
 class Generator(Protocol):
-    """A : modèle génératif (System 2). Injecté dans C par app.py pour les actions qui écrivent."""
+    """A: generative model (System 2). Injected into C by app.py for actions that write."""
 
     @property
     def model_id(self) -> str: ...
@@ -237,7 +237,7 @@ class Generator(Protocol):
 
 
 class Ranker(Protocol):
-    """A : façade appelée par le corps."""
+    """A: facade called by the core."""
 
     async def rank(self, bundle: ContextBundle, actions: list[ActionDescriptor]) -> ActionPlan: ...
 
@@ -245,13 +245,13 @@ class Ranker(Protocol):
 
 
 class ContextAssembler(Protocol):
-    """B : façade appelée par le corps."""
+    """B: facade called by the core."""
 
     async def assemble(self, obs: Observation, budget_tokens: int) -> ContextBundle: ...
 
 
 class Surface(Protocol):
-    """C : façade appelée par le corps."""
+    """C: facade called by the core."""
 
     async def observe(self, trigger: Trigger) -> Observation: ...
 
@@ -263,7 +263,7 @@ class Surface(Protocol):
 
 
 class Interface(Protocol):
-    """D : façade appelée par le corps (via le pont IPC à partir de la v0.2)."""
+    """D: facade called by the core (through the IPC bridge from v0.2)."""
 
     async def show_pie(self, plan: ActionPlan) -> MenuChoice: ...
 
@@ -271,6 +271,6 @@ class Interface(Protocol):
 
 
 class Audit(Protocol):
-    """Corps : journal des runs terminés."""
+    """Core: log of finished runs."""
 
     def record(self, run: RunState) -> None: ...

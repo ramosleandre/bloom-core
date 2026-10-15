@@ -1,1 +1,1 @@
-"""Bloc A · Décision : classement des actions, risque contextuel, génération."""
+"""Block A · Decision: action ranking, contextual risk, generation."""

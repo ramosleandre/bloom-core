@@ -1,4 +1,4 @@
-"""Journal append-only des runs terminés. Local, jamais commité : il contient des données personnelles."""
+"""Append-only log of finished runs. Local, never committed: it contains personal data."""
 
 from __future__ import annotations
 

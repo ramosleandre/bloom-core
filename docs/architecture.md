@@ -1,153 +1,153 @@
-# Architecture de Bloom (V1)
+# Bloom architecture (V1)
 
-> Livrable O2 « architecture diagram + data diagram » : première version attendue fin novembre, puis mise à jour à chaque changement structurant. Un schéma qui ne correspond plus au code est un bug, à corriger dans la PR qui l'a cassé.
+> Deliverable O2 "architecture diagram + data diagram": first version due end of November, then updated at every structural change. A diagram that no longer matches the code is a bug, to be fixed in the PR that broke it.
 
-## 1. Vue d'ensemble
+## 1. Overview
 
 ```mermaid
 flowchart TB
-    U(["Utilisateur sur son Mac"])
-    subgraph SHELL["Processus 1 · shell Tauri"]
-        D["D · Interface<br/>raccourci · pie menu · validation"]
+    U(["User on their Mac"])
+    subgraph SHELL["Process 1 · Tauri shell"]
+        D["D · Interface<br/>hotkey · pie menu · approval"]
     end
-    subgraph CORE["Processus 2 · daemon Python bloom"]
-        K["CORPS<br/>orchestre · policy · audit"]
-        A["A · Décision<br/>System 1 · LLM"]
-        B["B · Contexte & mémoire"]
+    subgraph CORE["Process 2 · Python bloom daemon"]
+        K["CORE<br/>orchestrates · policy · audit"]
+        A["A · Decision<br/>System 1 · LLM"]
+        B["B · Context & memory"]
         C["C · Surface & actions"]
     end
-    MAC[("macOS et ses apps")]
-    MOD[("Modèles<br/>Jev · Laya/Von · LLM")]
-    STO[("Local : audit JSONL · SQLite")]
+    MAC[("macOS and its apps")]
+    MOD[("Models<br/>Jev · Laya/Von · LLM")]
+    STO[("Local: JSONL audit · SQLite")]
 
     U <--> D
-    D <-->|"IPC WebSocket 127.0.0.1 + jeton"| K
+    D <-->|"WebSocket IPC 127.0.0.1 + token"| K
     K <--> A
     K <--> B
     K <--> C
     C <--> MAC
-    A -->|"adapters, si la policy l'autorise"| MOD
+    A -->|"adapters, if the policy allows it"| MOD
     K --> STO
 ```
 
-- **Deux processus** sur la machine : le shell Tauri (bloc D) affiche et remonte, sans rien décider ; le daemon Python contient le corps et les blocs A, B, C.
-- **Règle d'or** : les blocs ne se parlent jamais directement. Tout passe par le corps, et par des types définis dans `contracts.py`.
-- **Frontière de déploiement** : tout tourne en local, sauf les appels aux modèles hébergés. Ils ne passent que par `decision/adapters/`, et seulement si la policy autorise ce backend pour la sensibilité du contexte.
-- **IPC** : WebSocket sur 127.0.0.1, avec un jeton aléatoire passé au lancement et une vérification de l'en-tête Origin (n'importe quelle page web ouverte peut tenter de joindre un WebSocket local).
+- **Two processes** on the machine: the Tauri shell (block D) displays and reports back, without deciding anything; the Python daemon contains the core and blocks A, B, C.
+- **Golden rule**: blocks never talk to each other directly. Everything goes through the core, and through types defined in `contracts.py`.
+- **Deployment boundary**: everything runs locally, except calls to hosted models. They only go through `decision/adapters/`, and only if the policy allows that backend for the context's sensitivity.
+- **IPC**: WebSocket on 127.0.0.1, with a random token passed at launch and a check of the Origin header (any open web page can try to reach a local WebSocket).
 
-## 2. Le run, de bout en bout
+## 2. The run, end to end
 
 ```mermaid
 sequenceDiagram
-    actor U as Utilisateur
+    actor U as User
     participant D as D · Interface
-    participant K as Corps
+    participant K as Core
     participant C as C · Surface
-    participant B as B · Contexte
-    participant A as A · Décision
-    U->>D: raccourci
-    D->>K: Trigger (heure de l'appui)
+    participant B as B · Context
+    participant A as A · Decision
+    U->>D: hotkey
+    D->>K: Trigger (press time)
     K->>C: observe
     C-->>K: Observation
     K->>B: assemble
     B-->>K: ContextBundle
     K->>C: available
-    C-->>K: liste d'ActionDescriptor
+    C-->>K: list of ActionDescriptor
     K->>A: rank
     A-->>K: ActionPlan (System 1)
     K->>D: show_pie
-    D-->>K: MenuChoice (heure d'affichage)
+    D-->>K: MenuChoice (display time)
     K->>C: resolve
-    C-->>K: ResolvedAction (texte via A.generate si besoin)
+    C-->>K: ResolvedAction (text via A.generate if needed)
     K->>A: assess
-    A-->>K: risque contextuel ou pas d'avis (System 1)
-    Note over K: policy : plancher + gate
-    opt action risquée
-        K->>D: ApprovalRequest (aperçu + raisons)
-        D-->>K: approve, reject ou edit
+    A-->>K: contextual risk or no opinion (System 1)
+    Note over K: policy: floor + gate
+    opt risky action
+        K->>D: ApprovalRequest (preview + reasons)
+        D-->>K: approve, reject or edit
     end
     K->>C: execute
     C-->>K: ActionResult
-    Note over K: audit du RunState, chronos par étape
+    Note over K: RunState audit, timings per step
 ```
 
-Chaque étape correspond à quelques lignes de `src/bloom/core/pipeline.py`. Le corps chronomètre chaque étape (`RunState.timings_ms`) : c'est l'outillage de diagnostic de PERF.
+Each step corresponds to a few lines of `src/bloom/core/pipeline.py`. The core times each step (`RunState.timings_ms`): this is the diagnostic tooling for PERF.
 
-## 3. Le corps et les blocs
+## 3. The core and the blocks
 
-| | Fait | Reçoit | Rend | Ne fait pas |
+| | Does | Receives | Returns | Does not |
 |---|---|---|---|---|
-| **Corps** | enchaîne les étapes, applique la policy, journalise | `Trigger` | `RunState` | aucune logique métier |
-| **A · Décision** | classe (System 1), évalue le risque (System 1), écrit (LLM, injecté dans C) | contexte + actions ; action préparée | `ActionPlan` ; `Criticality` ou rien ; texte | chercher le contexte, exécuter, trancher la sécurité finale |
-| **B · Contexte** | collecte, étiquette, coupe au budget ; retient (v1.0) | `Observation` | `ContextBundle` | réseau, choix d'action |
-| **C · Surface** | observe l'écran, fournit le catalogue, prépare, exécute | `Trigger` ; action choisie | `Observation` ; `ActionDescriptor` ; `ResolvedAction` ; `ActionResult` | juger le risque, demander la validation |
-| **D · Interface** | raccourci, pie menu, fenêtre de validation | `ActionPlan` ; `ApprovalRequest` | `MenuChoice` ; `ApprovalResponse` | logique métier |
+| **Core** | chains the steps, applies the policy, logs | `Trigger` | `RunState` | any business logic |
+| **A · Decision** | ranks (System 1), assesses risk (System 1), writes (LLM, injected into C) | context + actions; prepared action | `ActionPlan`; `Criticality` or nothing; text | fetch the context, execute, make the final safety call |
+| **B · Context** | collects, labels, trims to budget; remembers (v1.0) | `Observation` | `ContextBundle` | network, choice of action |
+| **C · Surface** | observes the screen, provides the catalog, prepares, executes | `Trigger`; chosen action | `Observation`; `ActionDescriptor`; `ResolvedAction`; `ActionResult` | judge risk, request approval |
+| **D · Interface** | hotkey, pie menu, approval window | `ActionPlan`; `ApprovalRequest` | `MenuChoice`; `ApprovalResponse` | business logic |
 
-## 4. Les contrats
+## 4. The contracts
 
-Source de vérité : `src/bloom/core/contracts.py`. Les types TypeScript du shell seront générés depuis ces modèles (JSON Schema), jamais écrits à la main.
+Source of truth: `src/bloom/core/contracts.py`. The shell's TypeScript types will be generated from these models (JSON Schema), never written by hand.
 
-| Contrat | Produit par | Consommé par | Contient |
+| Contract | Produced by | Consumed by | Contains |
 |---|---|---|---|
-| `Trigger` | D | corps | type de déclencheur, heure de l'appui |
-| `Observation` | C | corps, puis B | application, fenêtre, sélection, URL |
-| `ContextBundle` / `Fragment` | B | A, C | fragments étiquetés : source, sensibilité, confiance, coût en tokens |
-| `ActionDescriptor` | C | A, D | id, libellé, plancher de criticité |
-| `ActionPlan` / `Candidate` | A | D | top-k actions, probabilités, backend utilisé |
-| `MenuChoice` | D | corps | action choisie ou annulation, heure d'affichage |
-| `ResolvedAction` | C | corps, D | arguments remplis, aperçu exact |
-| `ApprovalRequest` / `ApprovalResponse` | corps / D | D / corps | aperçu et raisons ; approve, reject ou edit |
-| `ActionResult` | C | corps | succès, détail, jeton d'annulation |
-| `RunState` | corps | audit, lab | tout le run, chronos par étape |
+| `Trigger` | D | core | trigger type, press time |
+| `Observation` | C | core, then B | application, window, selection, URL |
+| `ContextBundle` / `Fragment` | B | A, C | labeled fragments: source, sensitivity, trust, token cost |
+| `ActionDescriptor` | C | A, D | id, label, criticality floor |
+| `ActionPlan` / `Candidate` | A | D | top-k actions, probabilities, backend used |
+| `MenuChoice` | D | core | chosen action or cancellation, display time |
+| `ResolvedAction` | C | core, D | filled-in arguments, exact preview |
+| `ApprovalRequest` / `ApprovalResponse` | core / D | D / core | preview and reasons; approve, reject or edit |
+| `ActionResult` | C | core | success, detail, undo token |
+| `RunState` | core | audit, lab | the whole run, timings per step |
 
-Les façades des blocs sont définies dans le même fichier : `DecisionPort` et `Generator` (modèles), `Ranker` (A), `ContextAssembler` (B), `Surface` (C), `Interface` (D), `Audit` (corps).
+The block facades are defined in the same file: `DecisionPort` and `Generator` (models), `Ranker` (A), `ContextAssembler` (B), `Surface` (C), `Interface` (D), `Audit` (core).
 
-## 5. Règles de sécurité (`policy.py`)
+## 5. Safety rules (`policy.py`)
 
-1. **Criticité effective** = max(plancher déclaré par l'action, avis contextuel du modèle). Modèle muet ou indisponible : le plancher seul.
-2. **Validation obligatoire** si l'action est `EXTERNAL` (toujours), si sa criticité atteint le seuil de l'utilisateur (`DESTRUCTIVE` par défaut), ou si le contexte contient du contenu tiers (`UNTRUSTED`) et que l'action modifie quelque chose (au moins `REVERSIBLE`). C'est la défense contre l'injection indirecte.
-3. **Routage par sensibilité** : chaque backend déclare la donnée la plus sensible qu'il a le droit de voir ; un fragment `LOCAL_ONLY` exclut tout backend distant, par construction.
-4. **On valide le contenu réel** : la génération a lieu avant la validation, l'humain voit le mail écrit, pas une intention.
+1. **Effective criticality** = max(floor declared by the action, contextual opinion of the model). Model silent or unavailable: the floor alone.
+2. **Approval required** if the action is `EXTERNAL` (always), if its criticality reaches the user's threshold (`DESTRUCTIVE` by default), or if the context contains third-party content (`UNTRUSTED`) and the action modifies something (at least `REVERSIBLE`). This is the defense against indirect injection.
+3. **Routing by sensitivity**: each backend declares the most sensitive data it is allowed to see; a `LOCAL_ONLY` fragment excludes any remote backend, by construction.
+4. **Approval covers the real content**: generation happens before approval; the human sees the written email, not an intention.
 
-Ces règles sont testées sur toutes les combinaisons (`tests/core/test_policy.py`), et le test d'intégration vérifie qu'une action refusée n'est jamais exécutée.
+These rules are tested on every combination (`tests/core/test_policy.py`), and the integration test checks that a rejected action is never executed.
 
-## 6. Données
+## 6. Data
 
 ```mermaid
 erDiagram
-    RUN ||--|| TRIGGER : "démarré par"
-    RUN ||--|| CONTEXT_BUNDLE : "s'appuie sur"
-    CONTEXT_BUNDLE ||--|{ FRAGMENT : contient
-    RUN ||--o| ACTION_PLAN : propose
-    ACTION_PLAN ||--|{ CANDIDATE : classe
-    RUN ||--o| RESOLVED_ACTION : prépare
-    RUN ||--o| APPROVAL_RESPONSE : "validé par"
-    RUN ||--o| ACTION_RESULT : produit
+    RUN ||--|| TRIGGER : "started by"
+    RUN ||--|| CONTEXT_BUNDLE : "relies on"
+    CONTEXT_BUNDLE ||--|{ FRAGMENT : contains
+    RUN ||--o| ACTION_PLAN : proposes
+    ACTION_PLAN ||--|{ CANDIDATE : ranks
+    RUN ||--o| RESOLVED_ACTION : prepares
+    RUN ||--o| APPROVAL_RESPONSE : "approved by"
+    RUN ||--o| ACTION_RESULT : produces
 ```
 
-| Donnée | Volume attendu (estimation V1) | Où | Conservation |
+| Data | Expected volume (V1 estimate) | Where | Retention |
 |---|---|---|---|
-| Run (`RunState`) | 20 à 100 par jour et par utilisateur, 2 à 10 Ko chacun | `.bloom/audit.jsonl`, local | à fixer : contient des données personnelles (RGPD) |
-| Fragments | 5 à 30 par run, budget de 4 000 tokens | mémoire vive | durée du run |
-| Mémoire court terme | les dernières dizaines d'actions | SQLite local (v1.0) | fenêtre glissante |
-| Jeu d'évaluation | 50 à 200 situations | `lab/datasets/` | anonymisé, commité |
+| Run (`RunState`) | 20 to 100 per day per user, 2 to 10 KB each | `.bloom/audit.jsonl`, local | to be decided: contains personal data (GDPR) |
+| Fragments | 5 to 30 per run, 4,000-token budget | RAM | duration of the run |
+| Short-term memory | the last few dozen actions | local SQLite (v1.0) | sliding window |
+| Evaluation set | 50 to 200 situations | `lab/datasets/` | anonymized, committed |
 
-Aucune donnée utilisateur ne quitte la machine, sauf vers un backend de décision que la policy autorise pour la sensibilité concernée.
+No user data leaves the machine, except to a decision backend that the policy allows for the sensitivity concerned.
 
-## 7. Points de panne
+## 7. Failure points
 
-| Si… | Effet | Comportement prévu | Statut |
+| If… | Effect | Planned behavior | Status |
 |---|---|---|---|
-| le backend de décision distant ne répond pas | pas de classement | repli sur le backend suivant autorisé (local, puis règles) ; `decided_by` le trace | ✅ ranker |
-| aucun backend ne peut répondre | pas de classement | run échoué proprement et audité ; à terme, menu avec les seules actions fixes | 🟨 menu dégradé à faire |
-| le daemon Python plante | le shell ne répond plus | le shell affiche « Bloom indisponible » et relance le daemon | ⬜ v0.2 |
-| la permission Accessibilité est retirée | observation vide | menu dégradé + invitation à réactiver | ⬜ v0.2 |
-| le LLM génératif est lent ou indisponible | action d'écriture impossible | erreur claire, rien n'est exécuté | ⬜ v0.2 |
-| la validation reste sans réponse | run en attente | annulé à expiration (2 min) : jamais exécuté par défaut | ⬜ v0.4 |
-| un contenu tiers contient une injection | le modèle propose une action dangereuse | plancher + gate `UNTRUSTED` : validation obligatoire | ✅ policy |
-| la charge double (raccourcis en rafale) | runs concurrents | un seul run actif : un nouveau raccourci annule le précédent | ⬜ v0.1 |
-| un bloc lève une exception | run interrompu | run `FAILED`, erreur et état partiel audités | ✅ pipeline |
+| the remote decision backend does not respond | no ranking | fallback to the next allowed backend (local, then rules); `decided_by` records it | ✅ ranker |
+| no backend can respond | no ranking | run fails cleanly and is audited; eventually, a menu with only the fixed actions | 🟨 degraded menu still to do |
+| the Python daemon crashes | the shell stops responding | the shell displays "Bloom unavailable" and restarts the daemon | ⬜ v0.2 |
+| the Accessibility permission is revoked | empty observation | degraded menu + prompt to re-enable it | ⬜ v0.2 |
+| the generative LLM is slow or unavailable | writing action impossible | clear error, nothing is executed | ⬜ v0.2 |
+| the approval gets no answer | run pending | cancelled on expiry (2 min): never executed by default | ⬜ v0.4 |
+| third-party content contains an injection | the model proposes a dangerous action | floor + `UNTRUSTED` gate: approval required | ✅ policy |
+| the load doubles (burst of hotkeys) | concurrent runs | a single active run: a new hotkey cancels the previous one | ⬜ v0.1 |
+| a block raises an exception | run interrupted | run `FAILED`, error and partial state audited | ✅ pipeline |
 
-## 8. Choix structurants
+## 8. Structural choices
 
-Chaque choix, avec l'alternative écartée et la raison, est dans [`adr/`](adr/) : nouveau dépôt (0001), port de décision agnostique (0002), corps et 4 blocs en étoile (0003), daemon Python et shell Tauri (0004), outillage qualité (0005), pas de moteur de workflow en V1 (0006).
+Each choice, with the rejected alternative and the reason, is in [`adr/`](adr/): new repository (0001), model-agnostic decision port (0002), core and 4 blocks in a star (0003), Python daemon and Tauri shell (0004), quality tooling (0005), no workflow engine in V1 (0006).

@@ -1,7 +1,7 @@
 [project]
 name = "bloom"
 version = "0.0.1"
-description = "Un raccourci, un menu en cercle, la bonne action."
+description = "One hotkey, a pie menu, the right action."
 requires-python = ">=3.12"
 dependencies = ["pydantic>=2.8"]
 
@@ -29,7 +29,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 addopts = "-q"
 
-# ── Lint et format ──
+# ── Lint and format ──
 [tool.ruff]
 line-length = 110
 target-version = "py312"
@@ -37,13 +37,12 @@ src = ["src", "tests", "lab"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "ASYNC"]
-# Règles désactivées volontairement : la raison de chacune est dans docs/evidence/tech-debt.md (O2).
-ignore = ["E501", "RUF001", "RUF002", "RUF003"]
 
+# Rules disabled on purpose: the reason for each one is in docs/evidence/tech-debt.md (O2).
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
 
-# ── Types : strict pour le corps, standard pour les blocs ──
+# ── Types: strict for the core, standard for the blocks ──
 [tool.pyright]
 include = ["src", "tests", "lab"]
 pythonVersion = "3.12"
@@ -52,30 +51,30 @@ strict = ["src/bloom/core"]
 venvPath = "."
 venv = ".venv"
 
-# ── Règles d'architecture, vérifiées par `make check` (lint-imports) ──
+# ── Architecture rules, checked by `make check` (lint-imports) ──
 [tool.importlinter]
 root_package = "bloom"
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
-name = "Les 4 blocs ne s'importent jamais entre eux"
+name = "The 4 blocks never import each other"
 type = "independence"
 modules = ["bloom.decision", "bloom.context", "bloom.surface", "bloom.interface"]
 
 [[tool.importlinter.contracts]]
-name = "Le corps ne dépend d'aucun bloc (seul bloom.app les branche)"
+name = "The core depends on no block (only bloom.app wires them)"
 type = "forbidden"
 source_modules = ["bloom.core"]
 forbidden_modules = ["bloom.decision", "bloom.context", "bloom.surface", "bloom.interface", "bloom.app"]
 
 [[tool.importlinter.contracts]]
-name = "Un bloc n'utilise du corps que contracts et policy"
+name = "A block only uses contracts and policy from the core"
 type = "forbidden"
 source_modules = ["bloom.decision", "bloom.context", "bloom.surface", "bloom.interface"]
 forbidden_modules = ["bloom.core.pipeline", "bloom.core.audit", "bloom.app"]
 
 [[tool.importlinter.contracts]]
-name = "Le corps et le contexte n'appellent jamais le réseau ni un SDK de modèle"
+name = "The core and the context never call the network or a model SDK"
 type = "forbidden"
 source_modules = ["bloom.core", "bloom.context"]
 forbidden_modules = ["httpx", "requests", "aiohttp", "openai", "anthropic"]

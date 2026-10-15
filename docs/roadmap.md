@@ -1,128 +1,128 @@
 # Roadmap
 
-> Source de vérité de l'avancement de Bloom. Si un kanban existe, il recopie ce fichier, et ce fichier gagne en cas de désaccord.
-> Une case cochée = la définition de « fini » d'`AGENTS.md` est remplie.
-> Tags : qui `[A]` `[B]` `[C]` `[D]` `[Tous]` ; preuve pour la track `{O1}` `{O2}` `{PERF}` `{EXP}`. Les échéances de la track sont en gras ; les preuves sont rangées dans [`evidence/`](evidence/README.md).
+> Source of truth for Bloom's progress. If a kanban exists, it copies this file, and this file wins in case of disagreement.
+> A checked box = the definition of "done" in `AGENTS.md` is met.
+> Tags: who `[A]` `[B]` `[C]` `[D]` `[All]`; evidence for the track `{O1}` `{O2}` `{PERF}` `{EXP}`. Track deadlines are in bold; evidence is filed in [`evidence/`](evidence/README.md).
 
-## Où on en est
+## Where we are
 
-- Version en cours : **v0.0, socle**
-- Prochaine échéance de la track : **fin octobre**, la note sur le problème dur et le dispositif de veille {O1}
-- Mis à jour le : 2026-10-15
+- Current version: **v0.0, foundation**
+- Next track deadline: **end of October**, the hard-problem note and the tech watch setup {O1}
+- Last updated: 2026-10-15
 
-## Le principe
+## The principle
 
-Une tranche verticale qui marche, puis on mesure, puis on sécurise, puis on intègre la meilleure solution mesurée. Une version ne commence pas tant que la démo de la précédente ne tourne pas.
+A vertical slice that works, then we measure, then we secure, then we integrate the best measured solution. A version does not start until the previous one's demo runs.
 
 ---
 
-## v0.0 · Socle (15 → 31 octobre)
+## v0.0 · Foundation (October 15 → 31)
 
-But : tout le monde peut coder, la CI garde la porte, les deux livrables d'octobre partent.
+Goal: everyone can code, CI guards the door, both October deliverables go out.
 
-- [x] [A] Squelette du dépôt : corps, mocks des 4 blocs, tests, banc de décision, CI, base de connaissance
-- [ ] [A] Dépôt GitHub créé, `main` protégée, CI active {O2}
-- [ ] [Tous] `make setup`, `make check` et `make run` verts sur les 4 machines
-- [ ] [Tous] Relire les ADR 0001 à 0006, un commentaire chacun au minimum, puis les passer en « accepté » {O2}
-- [ ] [Tous] Le cas d'usage de référence écrit en une phrase, et les 8 actions listées avec leur plancher
-- [ ] [A] Mesurer l'approche naïve (un LLM génératif classe les 8 actions) : 30 appels, p50 et p95 {O1}
-- [ ] [A] Finaliser [`hard-problem.md`](hard-problem.md) avec les seuils chiffrés, l'envoyer au mentor {O1}
-- [ ] [Tous] Finaliser [`evidence/research-setup.md`](evidence/research-setup.md) : sources, outils en place, rythme, répartition {O1}
-- [ ] [Tous] Une première entrée de veille chacun dans `evidence/research-log.md` {O1}
-- [ ] [C] Tester la permission Accessibilité depuis un sidecar Python lancé par Tauri (risque n°1 de l'architecture)
+- [x] [A] Repository skeleton: core, mocks of the 4 blocks, tests, decision bench, CI, knowledge base
+- [ ] [A] GitHub repository created, `main` protected, CI active {O2}
+- [ ] [All] `make setup`, `make check` and `make run` green on all 4 machines
+- [ ] [All] Review ADRs 0001 to 0006, at least one comment each, then move them to "accepted" {O2}
+- [ ] [All] The reference use case written in one sentence, and the 8 actions listed with their floor
+- [ ] [A] Measure the naive approach (a generative LLM ranks the 8 actions): 30 calls, p50 and p95 {O1}
+- [ ] [A] Finalize [`hard-problem.md`](hard-problem.md) with quantified thresholds, send it to the mentor {O1}
+- [ ] [All] Finalize [`evidence/research-setup.md`](evidence/research-setup.md): sources, tools in place, cadence, split of work {O1}
+- [ ] [All] A first tech watch entry each in `evidence/research-log.md` {O1}
+- [ ] [C] Test the Accessibility permission from a Python sidecar launched by Tauri (risk #1 of the architecture)
 
-**Démo de fin** : `make check` et `make run` passent chez tout le monde ; le mentor a reçu la note sur le problème dur.
+**End demo**: `make check` and `make run` pass for everyone; the mentor has received the hard-problem note.
 
-## v0.1 · Le corps tourne sur des faux blocs (1 → 15 novembre)
+## v0.1 · The core runs on fake blocks (November 1 → 15)
 
-But : chacun peut développer son bloc seul, contre les mocks des autres.
+Goal: everyone can develop their block alone, against the others' mocks.
 
-- [ ] [A] `contracts.py` v1 figé, relu par les 4 (label `contrat`)
-- [ ] [B] [C] [D] Chaque bloc a son mock fidèle au contrat et ses tests de conformité
-- [ ] [A] Un seul run actif à la fois : un nouveau raccourci annule le précédent
-- [ ] [A] Événements `RunFinished` et `Feedback`, ajoutés quand leur premier consommateur existe
-- [ ] [Tous] Rituel de partage interne en place, première présentation notée {O1}
-- [ ] [Tous] Première review qui fait changer une PR, notée dans `evidence/reviews.md` {O2}
+- [ ] [A] `contracts.py` v1 frozen, reviewed by all 4 (label `contract`)
+- [ ] [B] [C] [D] Each block has its mock, faithful to the contract, and its conformance tests
+- [ ] [A] A single active run at a time: a new hotkey cancels the previous one
+- [ ] [A] `RunFinished` and `Feedback` events, added when their first consumer exists
+- [ ] [All] Internal sharing ritual in place, first presentation logged {O1}
+- [ ] [All] First review that changes a PR, logged in `evidence/reviews.md` {O2}
 
-**Démo de fin** : le test d'intégration couvre les quatre issues d'un run, et chaque bloc tourne seul contre les mocks.
+**End demo**: the integration test covers the four outcomes of a run, and each block runs alone against the mocks.
 
-## v0.2 · Tranche verticale réelle (16 novembre → 20 décembre)
+## v0.2 · Real vertical slice (November 16 → December 20)
 
-But : sur le Mac de référence, raccourci, menu, action exécutée, pour de vrai.
+Goal: on the reference Mac, hotkey, menu, action executed, for real.
 
-- [ ] [C] `observe()` réel sur macOS : application, fenêtre, sélection
-- [ ] [C] Les 8 actions avec leur plancher ; `execute()` réel pour au moins 3, dont une `EXTERNAL`
-- [ ] [B] Contexte réel : fragments de l'appareil et court terme, étiquetés, coupés au budget, sans réseau
-- [ ] [A] Un backend System 1 (Jev ou Laya) derrière `DecisionPort`, à côté des règles
-- [ ] [A] `generate()` (LLM) branché pour une action qui écrit
-- [ ] [D] Shell Tauri : raccourci global, pie menu (positions fixes + emplacements contextuels), fenêtre de validation
-- [ ] [D] Pont IPC (WebSocket local, jeton, Origin) et types TypeScript générés depuis les contrats
-- [ ] [A] Schéma d'architecture et schéma de données à jour dans `architecture.md` · **fin novembre** {O2}
-- [ ] [A] [Tous] Note d'état de l'art : au moins 3 approches comparées, sources datées · **fin décembre** {O1}
-- [ ] [D] README, doc de l'API (messages IPC) et doc d'exploitation, première version · **fin décembre** {O2}
-- [ ] [A] Rapport qualité de référence : `make quality` · **décembre** {O2}
-- [ ] [A] [D] Note de choix PERF : axe, indicateurs, cible · **fin décembre** {PERF}
-- [ ] [A] Note sur les 2 ou 3 sujets à faire challenger par des experts · **fin décembre** {EXP}
+- [ ] [C] Real `observe()` on macOS: application, window, selection
+- [ ] [C] The 8 actions with their floor; real `execute()` for at least 3, including one `EXTERNAL`
+- [ ] [B] Real context: device and short-term fragments, labeled, trimmed to budget, no network
+- [ ] [A] A System 1 backend (Jev or Laya) behind `DecisionPort`, alongside the rules
+- [ ] [A] `generate()` (LLM) wired up for an action that writes
+- [ ] [D] Tauri shell: global hotkey, pie menu (fixed positions + contextual slots), approval window
+- [ ] [D] IPC bridge (local WebSocket, token, Origin) and TypeScript types generated from the contracts
+- [ ] [A] Architecture diagram and data diagram up to date in `architecture.md` · **end of November** {O2}
+- [ ] [A] [All] State-of-the-art note: at least 3 approaches compared, dated sources · **end of December** {O1}
+- [ ] [D] README, API doc (IPC messages) and operations doc, first version · **end of December** {O2}
+- [ ] [A] Baseline quality report: `make quality` · **December** {O2}
+- [ ] [A] [D] PERF choice note: axis, indicators, target · **end of December** {PERF}
+- [ ] [A] Note on the 2 or 3 topics to have challenged by experts · **end of December** {EXP}
 
-**Démo de fin** : la tranche tourne sur le Mac de référence.
-**Go / no-go** : sur 20 situations réelles, l'action voulue est-elle dans le top 3 au moins 7 fois sur 10 ? Sinon, on revoit l'approche avant d'aller plus loin.
+**End demo**: the slice runs on the reference Mac.
+**Go / no-go**: on 20 real situations, is the intended action in the top 3 at least 7 times out of 10? If not, we rethink the approach before going further.
 
-## v0.3 · Décision mesurée (janvier → février)
+## v0.3 · Measured decision (January → February)
 
-But : choisir le backend de décision sur des mesures, pas sur une préférence.
+Goal: choose the decision backend based on measurements, not on a preference.
 
-- [ ] [Tous] Jeu d'au moins 50 situations réelles, annotées et anonymisées (`lab/datasets/`)
-- [ ] [A] Prototype de décision : au moins 2 backends, même jeu, même protocole, mesures côte à côte · **fin janvier** {O1}
-- [ ] [A] [D] Protocole de mesure PERF écrit et outillé (latence raccourci → menu) · **fin janvier** {PERF}
-- [ ] [A] Décision technique (ADR) : backend retenu, approches écartées, conséquences · **fin février** {O1}
-- [ ] [A] [D] Mesure de référence et diagnostic outillé : où ça bloque · **fin février** {PERF}
-- [ ] [B] Prototype d'exploration lancé, hypothèse écrite avant · **février → avril** {O1}
-- [ ] [A] Prises de contact experts : au moins 6 entre janvier et avril, relances comprises {EXP}
+- [ ] [All] A set of at least 50 real situations, annotated and anonymized (`lab/datasets/`)
+- [ ] [A] Decision prototype: at least 2 backends, same set, same protocol, measurements side by side · **end of January** {O1}
+- [ ] [A] [D] PERF measurement protocol written and tooled (hotkey → menu latency) · **end of January** {PERF}
+- [ ] [A] Technical decision (ADR): chosen backend, rejected approaches, consequences · **end of February** {O1}
+- [ ] [A] [D] Baseline measurement and tooled diagnosis: where it gets stuck · **end of February** {PERF}
+- [ ] [B] Exploration prototype launched, hypothesis written beforehand · **February → April** {O1}
+- [ ] [A] Expert outreach: at least 6 contacts between January and April, follow-ups included {EXP}
 
-**Démo de fin** : le tableau comparatif des backends, sorti de `make bench`.
+**End demo**: the backend comparison table, produced by `make bench`.
 
-## v0.4 · Confiance (mars)
+## v0.4 · Trust (March)
 
-But : rien de risqué ne passe sans l'utilisateur, et on le prouve.
+Goal: nothing risky goes through without the user, and we prove it.
 
-- [ ] [A] Validation qui expire, état du run sérialisable
-- [ ] [B] Routage par sensibilité en conditions réelles (fragments `LOCAL_ONLY`)
-- [ ] [C] Annulation (`undo`) des actions `REVERSIBLE`
-- [ ] [Tous] Jeu adversarial : une injection dans un mail ne déclenche rien sans validation
-- [ ] [C] Chemin critique couvert par les tests, taux de couverture publié · **fin mars** {O2}
-- [ ] [Tous] Au moins 3 régressions attrapées et documentées · **fin mars** {O2}
-- [ ] [D] Test de reproductibilité par une personne extérieure à l'équipe · **fin mars** {O2}
-- [ ] [A] [D] Boucle d'optimisation 1 : un changement, une nouvelle mesure, l'écart · **fin mars** {PERF}
-- [ ] [A] Premier échange avec un expert (dossier envoyé 48 h avant, compte rendu dans les 48 h) · **fin mars** {EXP}
+- [ ] [A] Approval that expires, serializable run state
+- [ ] [B] Routing by sensitivity under real conditions (`LOCAL_ONLY` fragments)
+- [ ] [C] Undo (`undo`) of `REVERSIBLE` actions
+- [ ] [All] Adversarial set: an injection in an email triggers nothing without approval
+- [ ] [C] Critical path covered by tests, coverage rate published · **end of March** {O2}
+- [ ] [All] At least 3 regressions caught and documented · **end of March** {O2}
+- [ ] [D] Reproducibility test by someone outside the team · **end of March** {O2}
+- [ ] [A] [D] Optimization loop 1: one change, a new measurement, the difference · **end of March** {PERF}
+- [ ] [A] First exchange with an expert (brief sent 48 h before, minutes within 48 h) · **end of March** {EXP}
 
-## v1.0 · Greenlight (avril → mai)
+## v1.0 · Greenlight (April → May)
 
-But : la solution retenue est intégrée et mesurée, et chaque objectif a ses preuves.
+Goal: the chosen solution is integrated and measured, and every objective has its evidence.
 
-- [ ] [A] Solution retenue intégrée sur `main`, mesure avant / après sur les critères d'octobre · **fin avril** {O1}
-- [ ] [B] Mémoire : `remember()` et personnalisation mesurée (gain du top 1 avec ou sans mémoire)
-- [ ] [B] Prototype d'exploration conclu, même négatif · **avril** {O1}
-- [ ] [A] [D] Boucle d'optimisation 2 · **fin mai** {PERF}
-- [ ] [A] Second échange avec un expert, mémo de fin d'année · **fin mai** {EXP}
-- [ ] [A] Rapport qualité final `make quality` · **mai** {O2}
-- [ ] [Tous] Au moins 5 contributions publiques, dont une externe · **mai** {O1}
-- [ ] [Tous] Répétition du jury : démo scriptée, toutes les preuves de `evidence/` à jour
+- [ ] [A] Chosen solution integrated on `main`, before / after measurement on the October criteria · **end of April** {O1}
+- [ ] [B] Memory: `remember()` and measured personalization (top-1 gain with vs. without memory)
+- [ ] [B] Exploration prototype concluded, even if negative · **April** {O1}
+- [ ] [A] [D] Optimization loop 2 · **end of May** {PERF}
+- [ ] [A] Second exchange with an expert, end-of-year memo · **end of May** {EXP}
+- [ ] [A] Final quality report `make quality` · **May** {O2}
+- [ ] [All] At least 5 public contributions, including one external · **May** {O1}
+- [ ] [All] Jury rehearsal: scripted demo, all evidence in `evidence/` up to date
 
-**Démo de fin** : le jury Greenlight.
+**End demo**: the Greenlight jury.
 
-## Plus tard (Tech 5, 2027-28)
+## Later (Tech 5, 2027-28)
 
-Rien de tout ça avant la Greenlight.
+None of this before the Greenlight.
 
-- mémoire longue qui se restructure seule (la contribution de recherche)
-- deuxième surface (le navigateur) : c'est là qu'on extraira les abstractions génériques
-- déclencheurs automatiques (planification, webhook), donc des runs qu'on suspend et reprend
-- connecteurs MCP
-- plus d'actions, catalogue extensible
+- long-term memory that restructures itself (the research contribution)
+- second surface (the browser): this is where we will extract the generic abstractions
+- automatic triggers (scheduling, webhook), hence runs that are suspended and resumed
+- MCP connectors
+- more actions, extensible catalog
 
 ## Parking
 
-Idées proposées, volontairement pas faites. Format : date · idée · qui · pourquoi pas maintenant.
+Ideas proposed, deliberately not done. Format: date · idea · who · why not now.
 
-- 2026-10-15 · moteur de workflow générique (DAG) · A · pas avant deux cas d'usage réels (ADR 0006)
-- 2026-10-15 · mobile, AR, voix · Tous · hors scope V1
+- 2026-10-15 · generic workflow engine (DAG) · A · not before two real use cases (ADR 0006)
+- 2026-10-15 · mobile, AR, voice · All · out of V1 scope

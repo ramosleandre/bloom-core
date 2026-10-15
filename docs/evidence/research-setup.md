@@ -1,48 +1,48 @@
-# Dispositif de veille (O1)
+# Tech watch setup (O1)
 
-> Livrable O1 à décrire **avant fin octobre 2026**, puis à tenir jusqu'en mai.
-> Statut : brouillon du 2026-10-15. Le guide exige un dispositif « décrit et démontrable, pas seulement affirmé » : chaque outil coché doit pouvoir être montré en séance.
+> O1 deliverable to be described **before end of October 2026**, then maintained until May.
+> Status: draft of 2026-10-15. The guide requires a setup that is "described and demonstrable, not just asserted": every ticked tool must be shown in a follow-up session.
 
-## Qui suit quoi
+## Who follows what
 
-| Domaine | Qui | Pourquoi ce domaine |
+| Area | Who | Why this area |
 |---|---|---|
-| Modèles de décision System 1, évaluation, calibration | A | c'est le problème dur |
-| Mémoire et contexte des agents (mem0, Letta…) | B | son bloc, et la piste de recherche |
-| Automatisation macOS, sécurité des agents (injection), MCP | C | son bloc, et les risques |
-| UX des menus radiaux, Tauri, latence perçue | D | son bloc, et l'axe PERF |
+| System 1 decision models, evaluation, calibration | A | it is the hard problem |
+| Agent memory and context (mem0, Letta…) | B | their block, and the research direction |
+| macOS automation, agent security (injection), MCP | C | their block, and the risks |
+| Radial menu UX, Tauri, perceived latency | D | their block, and the PERF axis |
 
 ## Sources
 
-| Source | Type | Qui | Ce qu'elle apporte | Pourquoi on la garde |
+| Source | Type | Who | What it provides | Why we keep it |
 |---|---|---|---|---|
-| Dépôt `NandhaKishorM/laya` (releases) | dépôt | A | modèle System 1 open source, local | candidat du prototype de décision |
-| Dépôt `wfzyx/von` (releases) | dépôt | A | modèle System 1 sur CPU | autre candidat local |
-| Liste `unikcc/awesome-system1-decision-models` | liste | A | recensement de la catégorie | ne pas rater une sortie |
-| Documentation et blog de TypeSafe (Jev) | doc officielle | A | API, prix, limites | backend hébergé candidat |
-| Alertes arXiv (decision model, calibration, agent memory, prompt injection) | publications | A, B, C | méthodes publiées | état de l'art daté |
-| Dépôts mem0 et Letta (releases) | dépôts | B | état de l'art de la mémoire d'agents | se comparer à l'existant |
-| OWASP Top 10 for LLM Applications | référence sécurité | C | catalogue des attaques, dont l'injection | grille pour le jeu adversarial |
-| Documentation Apple Accessibility + pyobjc | doc officielle | C | lecture de l'écran entre applications | risque n°1 de l'architecture |
-| Spécification MCP (releases) | spec | C | connecteurs de la V2 | ne pas réinventer les connecteurs |
-| Tauri (releases, documentation) | doc officielle | D | le shell desktop | dépendance directe |
-| Littérature IHM sur les pie menus et marking menus | publications | D | ce qui rend un menu radial efficace | décisions UX argumentées |
+| `NandhaKishorM/laya` repository (releases) | repository | A | open-source, local System 1 model | candidate for the decision prototype |
+| `wfzyx/von` repository (releases) | repository | A | System 1 model on CPU | another local candidate |
+| `unikcc/awesome-system1-decision-models` list | list | A | survey of the category | not missing a release |
+| TypeSafe (Jev) documentation and blog | official docs | A | API, pricing, limits | candidate hosted backend |
+| arXiv alerts (decision model, calibration, agent memory, prompt injection) | papers | A, B, C | published methods | dated state of the art |
+| mem0 and Letta repositories (releases) | repositories | B | state of the art in agent memory | comparing ourselves to existing work |
+| OWASP Top 10 for LLM Applications | security reference | C | catalog of attacks, including injection | checklist for the adversarial set |
+| Apple Accessibility documentation + pyobjc | official docs | C | reading the screen across applications | the architecture's #1 risk |
+| MCP specification (releases) | spec | C | V2 connectors | not reinventing connectors |
+| Tauri (releases, documentation) | official docs | D | the desktop shell | direct dependency |
+| HCI literature on pie menus and marking menus | papers | D | what makes a radial menu effective | well-argued UX decisions |
 
-Une source qui n'a produit aucune entrée en deux mois sort de la liste ; le retrait se note dans le journal.
+A source that has produced no entry in two months is dropped from the list; the removal is recorded in the log.
 
-## Outils et automatisations
+## Tools and automation
 
-- [ ] Canal Discord `#veille`, alimenté automatiquement par un bot RSS (flux arXiv, blogs, releases)
-- [ ] « Watch → Custom → Releases » sur GitHub pour chaque dépôt suivi
-- [ ] Base de notes partagée : [`research-log.md`](research-log.md), dans le dépôt, relue en PR
-- [ ] À chaque compte rendu, une capture du canal et des alertes, comme preuve que le dispositif tourne
+- [ ] Discord channel `#tech-watch`, fed automatically by an RSS bot (arXiv feeds, blogs, releases)
+- [ ] "Watch → Custom → Releases" on GitHub for each followed repository
+- [ ] Shared notes base: [`research-log.md`](research-log.md), in the repository, reviewed in PRs
+- [ ] With each report, a screenshot of the channel and the alerts, as evidence that the setup is running
 
-## Rythme
+## Cadence
 
-- 30 minutes par semaine et par personne
-- au moins une entrée de journal toutes les deux semaines par personne (une soixantaine sur l'année, pour un minimum de 20)
-- une présentation interne par mois dès novembre, à tour de rôle ([`presentations.md`](presentations.md))
+- 30 minutes per week per person
+- at least one log entry every two weeks per person (about sixty over the year, for a minimum of 20)
+- one internal presentation per month from November, in rotation ([`presentations.md`](presentations.md))
 
-## Ce qu'est une entrée valable
+## What counts as a valid entry
 
-Date, source, sujet, ce que ça change ou pourrait changer pour Bloom, et **ce qu'on en a fait, ou pourquoi on n'a rien fait**. Une entrée sans conclusion ne compte pas.
+Date, source, topic, what it changes or could change for Bloom, and **what we did about it, or why we did nothing**. An entry without a conclusion does not count.

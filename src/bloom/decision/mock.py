@@ -1,4 +1,4 @@
-"""Faux bloc A, pour tester le corps sans modèle : ordre du catalogue, avis de risque imposé."""
+"""Fake block A, to test the core without a model: catalog order, fixed risk opinion."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from bloom.core.contracts import (
 
 @dataclass
 class MockRanker:
-    assess_as: Criticality | None = None  # ex. SAFE pour vérifier que le plancher gagne
+    assess_as: Criticality | None = None  # e.g. SAFE to check that the floor wins
 
     async def rank(self, bundle: ContextBundle, actions: list[ActionDescriptor]) -> ActionPlan:
         prob = 1 / max(len(actions), 1)

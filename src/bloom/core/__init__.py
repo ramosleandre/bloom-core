@@ -1,1 +1,1 @@
-"""Le corps : contrats, règles de sécurité, pipeline du run, audit."""
+"""The core: contracts, safety rules, run pipeline, audit."""

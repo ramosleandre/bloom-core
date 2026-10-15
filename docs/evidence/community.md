@@ -1,15 +1,15 @@
-# Communautés techniques (O1)
+# Technical communities (O1)
 
-> De novembre à mai : au moins 2 communautés suivies activement ; au moins 5 contributions publiques ; au moins 1 contribution externe (doc corrigée, rapport détaillé, changement proposé, réponse acceptée). Pour chaque contribution : le lien, la date, le contexte, ce qui en est sorti, et une capture d'écran.
+> From November to May: at least 2 communities actively followed; at least 5 public contributions; at least 1 external contribution (fixed docs, detailed report, proposed change, accepted answer). For each contribution: the link, the date, the context, the outcome, and a screenshot.
 
-Pistes naturelles : les issues des dépôts Laya et Von (un résultat surprenant du banc devient un rapport détaillé avec reproduction), le Discord de Tauri, les issues de pyobjc.
+Natural candidates: issues on the Laya and Von repositories (a surprising bench result becomes a detailed report with a reproduction), the Tauri Discord, pyobjc issues.
 
-## Communautés suivies
+## Communities followed
 
-| Communauté | Lien | Pourquoi | Qui |
+| Community | Link | Why | Who |
 |---|---|---|---|
 
 ## Contributions
 
-| Date | Qui | Communauté | Type | Lien | Contexte | Résultat | Externe ? |
+| Date | Who | Community | Type | Link | Context | Outcome | External? |
 |---|---|---|---|---|---|---|---|

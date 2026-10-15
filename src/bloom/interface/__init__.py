@@ -1,1 +1,1 @@
-"""Bloc D · Interface, côté Python : pont IPC vers le shell Tauri (v0.2)."""
+"""Block D · Interface, Python side: IPC bridge to the Tauri shell (v0.2)."""

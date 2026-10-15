@@ -1,4 +1,4 @@
-"""Règles de sécurité : testées sur toutes les combinaisons, pas sur trois exemples."""
+"""Safety rules: tested on every combination, not on three examples."""
 
 from __future__ import annotations
 
@@ -24,23 +24,23 @@ def bundle(*frags: tuple[Sensitivity, Trust]) -> ContextBundle:
 
 
 @pytest.mark.parametrize(("floor", "contextual"), list(itertools.product(C, [None, *C])))
-def test_un_modele_ne_descend_jamais_sous_le_plancher(floor: C, contextual: C | None) -> None:
+def test_a_model_never_lowers_below_the_floor(floor: C, contextual: C | None) -> None:
     assert effective_criticality(floor, contextual) >= floor
 
 
 @pytest.mark.parametrize("user_gate", list(C))
-def test_une_action_externe_est_toujours_validee(user_gate: C) -> None:
+def test_an_external_action_always_needs_approval(user_gate: C) -> None:
     assert gate_reasons(C.EXTERNAL, bundle(), user_gate)
 
 
-def test_le_contenu_tiers_durcit_la_validation() -> None:
+def test_third_party_content_tightens_approval() -> None:
     clean = bundle((Sensitivity.PUBLIC, Trust.USER))
     dirty = bundle((Sensitivity.PUBLIC, Trust.UNTRUSTED))
     assert not gate_reasons(C.REVERSIBLE, clean)
     assert gate_reasons(C.REVERSIBLE, dirty)
 
 
-def test_une_lecture_ne_demande_jamais_de_validation() -> None:
+def test_a_read_never_needs_approval() -> None:
     assert not gate_reasons(C.SAFE, bundle((Sensitivity.PERSONAL, Trust.UNTRUSTED)))
 
 
@@ -50,8 +50,8 @@ class Backend:
     max_sensitivity: Sensitivity
 
 
-def test_un_contexte_local_only_n_est_jamais_route_vers_un_backend_distant() -> None:
-    remote = Backend("hebergé", Sensitivity.PERSONAL)
+def test_a_local_only_context_is_never_routed_to_a_remote_backend() -> None:
+    remote = Backend("hosted", Sensitivity.PERSONAL)
     local = Backend("local", Sensitivity.LOCAL_ONLY)
     secret = bundle((Sensitivity.LOCAL_ONLY, Trust.USER))
     assert allowed_backends(secret, [remote, local]) == [local]

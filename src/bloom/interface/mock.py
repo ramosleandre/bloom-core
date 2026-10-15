@@ -1,6 +1,6 @@
-"""Faux bloc D : choisit et valide à la place de l'utilisateur.
+"""Fake block D: chooses and approves on behalf of the user.
 
-pick="top" prend le premier candidat, pick=None ferme le menu, sinon l'id d'action donné.
+pick="top" takes the first candidate, pick=None closes the menu, otherwise the given action id.
 """
 
 from __future__ import annotations

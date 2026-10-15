@@ -1,7 +1,7 @@
-"""Racine de composition : le seul module qui branche les blocs entre eux.
+"""Composition root: the only module that wires the blocks together.
 
-Aujourd'hui il branche les mocks de B, C et D et la décision par règles. Chaque owner remplacera
-son mock par son vrai bloc ici, et nulle part ailleurs. `make run` lance main().
+Today it wires the mocks of B, C and D and the rule-based decision. Each owner will replace
+their mock with their real block here, and nowhere else. `make run` runs main().
 """
 
 from __future__ import annotations
@@ -43,19 +43,19 @@ async def demo() -> RunState:
 
 def main() -> None:
     run = asyncio.run(demo())
-    print("Bloom : run de démonstration (blocs B, C et D simulés, décision par règles)")
+    print("Bloom: demo run (blocks B, C and D mocked, rule-based decision)")
     if run.plan:
         menu = " | ".join(f"{c.label} {c.prob:.2f}" for c in run.plan.candidates)
-        print(f"  menu        {menu}   (décidé par {run.plan.decided_by})")
+        print(f"  menu        {menu}   (decided by {run.plan.decided_by})")
     if run.chosen:
-        print(f"  choix       {run.chosen.preview}")
+        print(f"  chosen      {run.chosen.preview}")
     if run.effective is not None:
-        print(f"  risque      {run.effective.name}")
+        print(f"  risk        {run.effective.name}")
     for reason in run.gate_reasons:
-        print(f"  validation  demandée : {reason}")
+        print(f"  approval    requested: {reason}")
     if run.approval:
-        print(f"  réponse     {run.approval.verdict} (simulée)")
-    detail = f" : {run.result.detail}" if run.result else ""
-    print(f"  statut      {run.status.value}{detail}")
-    print("  chronos     " + " · ".join(f"{k} {v} ms" for k, v in run.timings_ms.items()))
+        print(f"  response    {run.approval.verdict} (mocked)")
+    detail = f": {run.result.detail}" if run.result else ""
+    print(f"  status      {run.status.value}{detail}")
+    print("  timings     " + " · ".join(f"{k} {v} ms" for k, v in run.timings_ms.items()))
     print(f"  audit       {audit_path()}")

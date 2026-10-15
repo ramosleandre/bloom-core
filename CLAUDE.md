@@ -2,4 +2,4 @@
 
 ## Claude Code
 
-Toutes les règles sont dans AGENTS.md (importé ci-dessus), partagé avec les autres agents. Ajouter ici seulement ce qui ne concerne que Claude Code.
+All the rules are in AGENTS.md (imported above), shared with the other agents. Only add here what concerns Claude Code alone.

@@ -1,10 +1,10 @@
-"""Backend de référence : des règles écrites à la main, sans modèle.
+"""Reference backend: hand-written rules, no model.
 
-C'est la baseline du prototype de décision (O1) : un modèle System 1 n'a d'intérêt que s'il
-fait mieux que ces règles. Il ne répond qu'à la question de classement ; pour le reste il n'a
-pas d'avis (choice=None), et la policy applique alors le plancher seul.
+This is the baseline of the decision prototype (O1): a System 1 model is only worth it if it
+beats these rules. It only answers the ranking question; for the rest it has no opinion
+(choice=None), and the policy then applies the floor alone.
 
-Ne pas régler ces règles sur le jeu d'évaluation : sinon le score ne mesure plus rien.
+Do not tune these rules on the evaluation set: otherwise the score no longer measures anything.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from dataclasses import dataclass
 
 from bloom.core.contracts import ContextBundle, Decision, Question, Sensitivity
 
-# App active -> actions probables, de la plus à la moins probable.
+# Active app -> likely actions, from most to least likely.
 APP_HINTS: dict[str, list[str]] = {
     "com.apple.mail": ["reply.draft", "text.summarize", "calendar.add_event"],
     "com.google.Chrome": ["text.summarize", "text.translate", "notes.save"],
@@ -27,7 +27,7 @@ APP_HINTS: dict[str, list[str]] = {
 @dataclass(frozen=True)
 class RulesDecision:
     model_id: str = "rules-v0"
-    max_sensitivity: Sensitivity = Sensitivity.LOCAL_ONLY  # tourne en local, peut tout voir
+    max_sensitivity: Sensitivity = Sensitivity.LOCAL_ONLY  # runs locally, can see everything
 
     async def decide(self, bundle: ContextBundle, question: Question) -> Decision:
         start = time.perf_counter()

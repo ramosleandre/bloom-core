@@ -1,6 +1,6 @@
-"""Un fichier par backend de décision. C'est le SEUL endroit où un SDK de modèle a le droit d'être importé.
+"""One file per decision backend. This is the ONLY place where a model SDK may be imported.
 
-Ajouter un backend : un fichier ici (ex. laya.py), une entrée dans BACKENDS, puis `make bench`.
+Adding a backend: one file here (e.g. laya.py), one entry in BACKENDS, then `make bench`.
 """
 
 from __future__ import annotations

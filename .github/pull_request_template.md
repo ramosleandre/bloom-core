@@ -1,21 +1,21 @@
-## Quoi et pourquoi
-<!-- 2 lignes. Lien vers la case de docs/roadmap.md concernée. -->
+## What and why
+<!-- 2 lines. Link to the relevant item in docs/roadmap.md. -->
 
-## Bloc touché
-- [ ] core (si `contracts.py` change : label `contrat` + review des owners concernés)
+## Block touched
+- [ ] core (if `contracts.py` changes: `contract` label + review by the affected owners)
 - [ ] decision
 - [ ] context
 - [ ] surface
 - [ ] interface
 - [ ] lab / docs
 
-## Vérifié
-- [ ] `make check` vert en local
-- [ ] un test couvre le changement
-- [ ] la doc suit (AGENTS.md du bloc, `docs/architecture.md`, ADR si décision structurante)
-- [ ] case cochée dans `docs/roadmap.md`
-- [ ] preuve pour la track ajoutée dans `docs/evidence/` (si concerné)
+## Checked
+- [ ] `make check` green locally
+- [ ] a test covers the change
+- [ ] the docs follow (block AGENTS.md, `docs/architecture.md`, ADR if structural decision)
+- [ ] item checked in `docs/roadmap.md`
+- [ ] track evidence added to `docs/evidence/` (if relevant)
 
-## Pour la personne qui relit
-Laisse au moins un commentaire : la track ne compte pas une approbation sans commentaire.
-Si ta review fait changer la PR, ajoute une ligne dans `docs/evidence/reviews.md`.
+## For the reviewer
+Leave at least one comment: the track does not count an approval without a comment.
+If your review changes the PR, add a line to `docs/evidence/reviews.md`.

@@ -1,22 +1,20 @@
-# Dette technique et qualité (O2)
+# Technical debt and quality (O2)
 
-> Ce qu'on sait devoir corriger, pourquoi pas maintenant, et à peu près combien ça coûterait. Les rapports de qualité datés (référence en décembre, final en mai) sont produits par `make quality` dans `lab/results/quality/`.
+> What we know we must fix, why not now, and roughly how much it would cost. The dated quality reports (baseline in December, final in May) are produced by `make quality` in `lab/results/quality/`.
 
-## Dette
+## Debt
 
-| Date | Bloc | Quoi | Pourquoi pas maintenant | Coût estimé | Statut |
+| Date | Block | What | Why not now | Estimated cost | Status |
 |---|---|---|---|---|---|
-| 2026-10-15 | core | quand l'utilisateur modifie une action à la validation (`edit`), les nouveaux arguments ne sont pas revalidés | aucune action n'a encore de schéma d'arguments | 0,5 jour | ouvert |
+| 2026-10-15 | core | when the user edits an action at approval time (`edit`), the new arguments are not revalidated | no action has an argument schema yet | 0.5 day | open |
 
-## Qualité mesurée
+## Measured quality
 
-| Date | Avertissements ruff | Erreurs pyright | Couverture des tests | Rapport |
+| Date | ruff warnings | pyright errors | Test coverage | Report |
 |---|---|---|---|---|
 
-## Règles désactivées volontairement
+## Rules deliberately disabled
 
-| Règle | Où | Pourquoi |
+| Rule | Where | Why |
 |---|---|---|
-| E501 (longueur de ligne) | partout | le formateur gère le code ; les commentaires en français dépassent souvent |
-| RUF001, RUF002, RUF003 (caractères unicode ambigus) | partout | faux positifs sur la typographie française |
-| S101 (usage d'`assert`) | `tests/` | `assert` est la façon normale d'écrire un test pytest |
+| S101 (use of `assert`) | `tests/` | `assert` is the normal way to write a pytest test |

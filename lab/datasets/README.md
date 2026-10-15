@@ -1,24 +1,24 @@
-# Jeux de situations
+# Situation sets
 
-Une ligne JSON = une situation : ce qu'il y avait à l'écran, les actions possibles, ce que l'utilisateur voulait vraiment faire.
+One JSON line = one situation: what was on screen, the possible actions, what the user actually wanted to do.
 
 ```json
-{"id": "s01", "app_bundle_id": "com.apple.mail", "window_title": "Re: soutenance",
- "selected_text": "Peux-tu confirmer ta présence jeudi ?", "url": null,
+{"id": "s01", "app_bundle_id": "com.apple.mail", "window_title": "Re: defense",
+ "selected_text": "Can you confirm you'll attend on Thursday?", "url": null,
  "available": ["reply.draft", "reply.send", "text.summarize", "..."],
  "expected": ["reply.draft"], "profile": "default", "annotator": "B", "notes": ""}
 ```
 
-| Champ | Sens |
+| Field | Meaning |
 |---|---|
-| `available` | les actions que le catalogue propose dans cette situation |
-| `expected` | la ou les actions jugées correctes par l'annotateur (plusieurs si c'est ambigu) |
-| `profile` | l'utilisateur dont l'historique compte (sert à mesurer la personnalisation) |
-| `annotator` | qui a annoté (A, B, C ou D) |
+| `available` | the actions the catalog offers in this situation |
+| `expected` | the action(s) the annotator judged correct (several if it is ambiguous) |
+| `profile` | the user whose history counts (used to measure personalization) |
+| `annotator` | who annotated (A, B, C or D) |
 
-## Règles
+## Rules
 
-- **Rien de réel n'est commité sans anonymisation** : noms, adresses, contenus de mails. Les captures brutes vont dans `private/`, ignoré par git.
-- Chaque situation est annotée par la personne qui l'a vécue ; les cas ambigus sont relus par une deuxième personne.
-- `situations.sample.jsonl` sert uniquement à vérifier que le banc tourne : ses scores ne prouvent rien (les règles d'exemple ont été écrites en le regardant).
-- Le jeu d'évaluation (au moins 50 situations, v0.3) est figé avant de régler les backends. On l'étend par versions (`situations.v2.jsonl`) ; on ne le modifie jamais en place, sinon les mesures d'avant et d'après ne se comparent plus.
+- **Nothing real is committed without anonymization**: names, addresses, email contents. Raw captures go in `private/`, ignored by git.
+- Each situation is annotated by the person who lived it; ambiguous cases are reviewed by a second person.
+- `situations.sample.jsonl` is only used to check that the bench runs: its scores prove nothing (the sample rules were written while looking at it).
+- The evaluation set (at least 50 situations, v0.3) is frozen before the backends are tuned. It is extended through new versions (`situations.v2.jsonl`); it is never modified in place, otherwise measurements from before and after can no longer be compared.

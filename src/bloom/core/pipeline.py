@@ -1,8 +1,8 @@
-"""Le run, de bout en bout. Une fonction, un ordre écrit en dur, pas de moteur de workflow.
+"""The run, end to end. One function, a hard-coded order, no workflow engine.
 
-Chaque étape correspond à une étape du schéma « Le run » de docs/architecture.md.
-Le jour où un deuxième cas d'usage impose une branche que cette fonction ne sait pas
-exprimer, on extraira une abstraction. Pas avant.
+Each step matches a step of the "The run" diagram in docs/architecture.md.
+The day a second use case requires a branch this function cannot express,
+we will extract an abstraction. Not before.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ from bloom.core.policy import DEFAULT_GATE, effective_criticality, gate_reasons
 
 @dataclass
 class _Progress:
-    """État courant du run : gardé même si une étape plante, pour que l'audit voie tout."""
+    """Current state of the run: kept even if a step crashes, so that the audit sees everything."""
 
     state: RunState
     timings: dict[str, int] = field(default_factory=lambda: {})
@@ -60,7 +60,7 @@ async def handle_trigger(
     user_gate: Criticality = DEFAULT_GATE,
     approval_ttl: timedelta = timedelta(minutes=2),
 ) -> RunState:
-    """Ne lève jamais : un bloc qui plante donne un run FAILED, audité avec son état partiel."""
+    """Never raises: a crashing block gives a FAILED run, audited with its partial state."""
     progress = _Progress(RunState(trigger=trigger))
     try:
         await _run(progress, surface, context, ranker, interface, budget_tokens, user_gate, approval_ttl)
@@ -83,35 +83,35 @@ async def _run(
 ) -> None:
     trigger = p.state.trigger
 
-    # 2. Bloom regarde l'écran (C)
+    # 2. Bloom looks at the screen (C)
     with p.timed("observe"):
         obs = await surface.observe(trigger)
 
-    # 3. Bloom rassemble le contexte utile (B)
+    # 3. Bloom gathers the useful context (B)
     with p.timed("assemble"):
         bundle = await context.assemble(obs, budget_tokens)
 
-    # 4. Le cerveau classe les actions possibles (C fournit le catalogue, A classe)
+    # 4. The brain ranks the possible actions (C provides the catalog, A ranks)
     actions = {a.id: a for a in surface.available(obs)}
     with p.timed("rank"):
         plan = await ranker.rank(bundle, list(actions.values()))
     p.update(status=RunStatus.AWAITING_CHOICE, plan=plan)
 
-    # 5. Le menu en cercle s'ouvre, l'utilisateur choisit (D)
+    # 5. The pie menu opens, the user chooses (D)
     menu = await interface.show_pie(plan)
     p.timings["menu_latency"] = round((menu.shown_at - trigger.at).total_seconds() * 1000)
     if menu.action_id is None or menu.action_id not in actions:
         p.update(status=RunStatus.CANCELLED)
         return
 
-    # 6. Bloom prépare l'action : les arguments sont remplis AVANT la validation,
-    #    pour que l'humain valide le contenu réel (le mail écrit), pas une intention.
+    # 6. Bloom prepares the action: the arguments are filled in BEFORE approval,
+    #    so that the human approves the actual content (the written email), not an intent.
     with p.timed("resolve"):
         resolved = await surface.resolve(menu.action_id, bundle)
     with p.timed("assess"):
         contextual = await ranker.assess(bundle, resolved)
 
-    # 7. Contrôle de sécurité (policy du corps)
+    # 7. Safety check (core policy)
     effective = effective_criticality(actions[menu.action_id].floor, contextual)
     reasons = gate_reasons(effective, bundle, user_gate)
     p.update(chosen=resolved, effective=effective, gate_reasons=reasons)
@@ -133,10 +133,10 @@ async def _run(
             p.update(status=RunStatus.CANCELLED)
             return
         if response.verdict == "edit":
-            # Dette connue (docs/evidence/tech-debt.md) : revalider les arguments édités.
+            # Known debt (docs/evidence/tech-debt.md): revalidate the edited arguments.
             resolved = resolved.model_copy(update={"args": response.edited_args or {}})
 
-    # 8. L'action s'exécute (C)
+    # 8. The action runs (C)
     p.update(status=RunStatus.EXECUTING)
     with p.timed("execute"):
         result = await surface.execute(resolved)

@@ -1,7 +1,7 @@
-"""Faux bloc C : une scène fixe (un mail ouvert dans Mail), le catalogue d'exemple, exécution simulée.
+"""Fake block C: a fixed scene (an email open in Mail), the example catalog, mocked execution.
 
-EXAMPLE_CATALOG est un exemple de catalogue V1 (8 actions, chacune avec son plancher). Le vrai
-catalogue sera fixé avec le cas d'usage de référence (roadmap v0.0).
+EXAMPLE_CATALOG is an example V1 catalog (8 actions, each with its floor). The real catalog
+will be set together with the reference use case (roadmap v0.0).
 """
 
 from __future__ import annotations
@@ -21,19 +21,19 @@ from bloom.core.contracts import (
 
 EXAMPLE_CATALOG = [
     ActionDescriptor(
-        id="reply.draft", label="Rédiger une réponse", floor=Criticality.REVERSIBLE, needs_generation=True
+        id="reply.draft", label="Draft a reply", floor=Criticality.REVERSIBLE, needs_generation=True
     ),
     ActionDescriptor(
-        id="reply.send", label="Envoyer la réponse", floor=Criticality.EXTERNAL, needs_generation=True
+        id="reply.send", label="Send the reply", floor=Criticality.EXTERNAL, needs_generation=True
     ),
-    ActionDescriptor(id="text.summarize", label="Résumer", floor=Criticality.SAFE, needs_generation=True),
-    ActionDescriptor(id="text.translate", label="Traduire", floor=Criticality.SAFE, needs_generation=True),
-    ActionDescriptor(id="calendar.add_event", label="Ajouter au calendrier", floor=Criticality.REVERSIBLE),
-    ActionDescriptor(id="notes.save", label="Garder dans mes notes", floor=Criticality.REVERSIBLE),
+    ActionDescriptor(id="text.summarize", label="Summarize", floor=Criticality.SAFE, needs_generation=True),
+    ActionDescriptor(id="text.translate", label="Translate", floor=Criticality.SAFE, needs_generation=True),
+    ActionDescriptor(id="calendar.add_event", label="Add to calendar", floor=Criticality.REVERSIBLE),
+    ActionDescriptor(id="notes.save", label="Save to my notes", floor=Criticality.REVERSIBLE),
     ActionDescriptor(
-        id="code.explain", label="Expliquer le code", floor=Criticality.SAFE, needs_generation=True
+        id="code.explain", label="Explain the code", floor=Criticality.SAFE, needs_generation=True
     ),
-    ActionDescriptor(id="file.trash", label="Mettre à la corbeille", floor=Criticality.DESTRUCTIVE),
+    ActionDescriptor(id="file.trash", label="Move to Trash", floor=Criticality.DESTRUCTIVE),
 ]
 
 
@@ -45,8 +45,8 @@ class MockSurface:
         return Observation(
             trigger_id=trigger.id,
             app_bundle_id="com.apple.mail",
-            window_title="Re: soutenance Bloom",
-            selected_text="Peux-tu confirmer ta présence jeudi à 14 h ?",
+            window_title="Re: Bloom defense",
+            selected_text="Can you confirm you'll attend on Thursday at 2 pm?",
             captured_at=datetime.now(UTC),
         )
 
@@ -55,8 +55,8 @@ class MockSurface:
 
     async def resolve(self, action_id: str, bundle: ContextBundle) -> ResolvedAction:
         label = next(a.label for a in EXAMPLE_CATALOG if a.id == action_id)
-        return ResolvedAction(action_id=action_id, args={}, preview=f"{label} (simulé)")
+        return ResolvedAction(action_id=action_id, args={}, preview=f"{label} (mocked)")
 
     async def execute(self, action: ResolvedAction) -> ActionResult:
         self.executed.append(action)
-        return ActionResult(ok=True, detail=f"{action.action_id} exécutée (simulé)")
+        return ActionResult(ok=True, detail=f"{action.action_id} executed (mocked)")

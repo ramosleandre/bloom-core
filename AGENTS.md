@@ -1,72 +1,73 @@
-# AGENTS.md : Bloom
+# AGENTS.md: Bloom
 
-Instructions pour les agents IA (Claude Code, Codex, Cursor…) et pour toute personne qui touche au code.
+Instructions for AI agents (Claude Code, Codex, Cursor…) and for anyone who touches the code.
 
-## En bref
+## In short
 
-Bloom : sur macOS, un raccourci clavier ouvre un menu en cercle qui propose les trois actions les plus utiles pour ce qui est à l'écran ; l'action choisie s'exécute, avec une validation humaine si elle est risquée. Vue d'ensemble : [`docs/architecture.md`](docs/architecture.md). Avancement : [`docs/roadmap.md`](docs/roadmap.md).
+Bloom: on macOS, a hotkey opens a pie menu that suggests the three most useful actions for what is on screen; the chosen action runs, with human approval if it is risky. Overview: [`docs/architecture.md`](docs/architecture.md). Progress: [`docs/roadmap.md`](docs/roadmap.md).
 
-## Commandes
+## Commands
 
-| Commande | Effet |
+| Command | Effect |
 |---|---|
-| `make setup` | installe tout (uv) |
-| `make check` | format, lint, types, règles d'architecture, tests : **ce que la CI exige** |
-| `make fix` | corrige le format et le lint automatiquement |
-| `make test b=decision` | tests d'un bloc (sans `b=` : tous) |
-| `make bench` | banc de décision → `lab/results/local/` |
-| `make run` | un run de démonstration, blocs simulés |
-| `make quality` | rapport qualité daté |
+| `make setup` | installs everything (uv) |
+| `make check` | format, lint, types, architecture rules, tests: **what CI requires** |
+| `make fix` | fixes formatting and lint automatically |
+| `make test b=decision` | tests for one block (without `b=`: all) |
+| `make bench` | decision bench → `lab/results/local/` |
+| `make run` | a demo run, mocked blocks |
+| `make quality` | dated quality report |
 
-Avant d'annoncer « fini » : `make check` passe.
+Before saying "done": `make check` passes.
 
-## Carte du code
+## Code map
 
-| Partie | Dossier | Rôle |
+| Part | Folder | Role |
 |---|---|---|
-| Corps | `src/bloom/core/` | contrats (`contracts.py`), règles de sécurité (`policy.py`), le run (`pipeline.py`), audit |
-| A · Décision | `src/bloom/decision/` | classe les actions, évalue le risque ; un fichier par backend de modèle dans `adapters/` |
-| B · Contexte | `src/bloom/context/` | assemble le contexte, étiqueté par source, sensibilité et confiance |
-| C · Surface | `src/bloom/surface/` | lit l'écran macOS, fournit le catalogue d'actions, les prépare et les exécute |
-| D · Interface | `src/bloom/interface/` + `shell/` | pont vers le shell Tauri : raccourci, pie menu, validation |
-| Composition | `src/bloom/app.py` | le seul endroit qui branche les blocs entre eux |
-| Lab | `lab/` | mesures : modèles de décision, performance |
+| Core | `src/bloom/core/` | contracts (`contracts.py`), safety rules (`policy.py`), the run (`pipeline.py`), audit |
+| A · Decision | `src/bloom/decision/` | ranks actions, assesses risk; one file per model backend in `adapters/` |
+| B · Context | `src/bloom/context/` | assembles the context, labeled by source, sensitivity and trust |
+| C · Surface | `src/bloom/surface/` | reads the macOS screen, provides the action catalog, prepares and executes actions |
+| D · Interface | `src/bloom/interface/` + `shell/` | bridge to the Tauri shell: hotkey, pie menu, approval |
+| Composition | `src/bloom/app.py` | the only place that wires the blocks together |
+| Lab | `lab/` | measurements: decision models, performance |
 
-## Règles
+## Rules
 
-Vérifiées par `make check` quand c'est possible.
+Checked by `make check` where possible.
 
-1. Les blocs ne s'importent jamais entre eux. Du corps, ils n'importent que `bloom.core.contracts` et `bloom.core.policy`.
-2. Le corps n'importe aucun bloc. Seul `bloom/app.py` les branche.
-3. Le corps et le bloc contexte n'appellent jamais le réseau ni un SDK de modèle. Les SDK de modèles vivent uniquement dans `src/bloom/decision/adapters/`.
-4. Plancher de criticité : un modèle peut monter le niveau de risque d'une action, jamais le descendre. Une action `EXTERNAL` demande toujours une validation.
-5. Changer `src/bloom/core/contracts.py` : PR avec le label `contrat`, relue par les owners des blocs concernés.
-6. Aucun secret dans le dépôt (`.env` local, voir `.env.example`). Aucune donnée personnelle réelle commitée.
+1. Blocks never import each other. From the core, they only import `bloom.core.contracts` and `bloom.core.policy`.
+2. The core imports no block. Only `bloom/app.py` wires them.
+3. The core and the context block never call the network or a model SDK. Model SDKs live only in `src/bloom/decision/adapters/`.
+4. Criticality floor: a model can raise an action's risk level, never lower it. An `EXTERNAL` action always requires approval.
+5. Changing `src/bloom/core/contracts.py`: PR with the `contract` label, reviewed by the owners of the affected blocks.
+6. No secrets in the repo (local `.env`, see `.env.example`). No real personal data committed.
+7. Everything is written in English: code, comments, docs, commit messages.
 
-## Rester simple
+## Keep it simple
 
-- Pas d'abstraction générique sans deux usages réels dans le code.
-- Pas de nouvelle dépendance sans ADR (`docs/adr/`).
-- Une PR = une portée = un sujet. Si la tâche touche deux blocs, c'est probablement un changement de contrat : arrête-toi et demande.
-- Pas d'optimisation sans mesure avant et après (`lab/`).
+- No generic abstraction without two real uses in the code.
+- No new dependency without an ADR (`docs/adr/`).
+- One PR = one scope = one topic. If the task touches two blocks, it is probably a contract change: stop and ask.
+- No optimization without a measurement before and after (`lab/`).
 
-## Définition de « fini »
+## Definition of "done"
 
-- [ ] `make check` vert
-- [ ] un test couvre le comportement ajouté ou modifié
-- [ ] `docs/architecture.md` à jour si la structure ou un contrat a changé
-- [ ] la case de `docs/roadmap.md` est cochée
-- [ ] la preuve est notée dans `docs/evidence/` si le changement en produit une (tableau ci-dessous)
+- [ ] `make check` green
+- [ ] a test covers the added or changed behavior
+- [ ] `docs/architecture.md` up to date if the structure or a contract changed
+- [ ] the item in `docs/roadmap.md` is checked
+- [ ] the evidence is recorded in `docs/evidence/` if the change produces some (table below)
 
-## Où noter quoi
+## Where to record what
 
-| Il s'est passé… | Écris dans |
+| What happened | Write in |
 |---|---|
-| une décision structurante (techno, découpage, format, abandon) | un nouvel ADR `docs/adr/NNNN-titre.md` |
-| un test a attrapé une régression, ou la CI a bloqué une PR | `docs/evidence/regressions.md` |
-| une review a fait changer une PR | `docs/evidence/reviews.md` |
-| une dette assumée | `docs/evidence/tech-debt.md` |
-| une mesure officielle | `lab/results/AAAA-MM-JJ_nom/` puis `docs/evidence/perf.md` |
-| une source de veille lue, avec une conclusion | `docs/evidence/research-log.md` |
+| a structural decision (technology, split, format, abandonment) | a new ADR `docs/adr/NNNN-title.md` |
+| a test caught a regression, or CI blocked a PR | `docs/evidence/regressions.md` |
+| a review changed a PR | `docs/evidence/reviews.md` |
+| an accepted debt | `docs/evidence/tech-debt.md` |
+| an official measurement | `lab/results/YYYY-MM-DD_name/` then `docs/evidence/perf.md` |
+| a tech watch source read, with a conclusion | `docs/evidence/research-log.md` |
 
-Commits, PR et review : [`CONTRIBUTING.md`](CONTRIBUTING.md). N'ajoute jamais de ligne `Co-Authored-By` à un message de commit.
+Commits, PRs and review: [`CONTRIBUTING.md`](CONTRIBUTING.md). Never add `Co-Authored-By` lines to commit messages.

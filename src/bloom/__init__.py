@@ -1,1 +1,1 @@
-"""Bloom : un raccourci, un menu en cercle, la bonne action. Point d'entrée de lecture : AGENTS.md."""
+"""Bloom: one hotkey, a pie menu, the right action. Start reading at AGENTS.md."""

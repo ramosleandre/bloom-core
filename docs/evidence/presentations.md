@@ -1,14 +1,14 @@
-# Présentations internes (O1)
+# Internal presentations (O1)
 
-> Rituel en place dès novembre, mensuel au minimum. Au moins 6 présentations sur l'année, et au moins 3 choses issues de la veille réellement reprises dans le projet.
+> Ritual in place from November, at least monthly. At least 6 presentations over the year, and at least 3 things from the tech watch actually adopted in the project.
 
-## Présentations
+## Presentations
 
-| Date | Qui | Sujet | Pour qui | Ce qu'on en a tiré |
+| Date | Who | Topic | Audience | What we took from it |
 |---|---|---|---|---|
 
-## Repris dans le projet
+## Adopted in the project
 
-| Quoi | Source d'origine | Ce que ça a changé | Commit, PR ou ADR |
+| What | Original source | What it changed | Commit, PR or ADR |
 |---|---|---|---|
-| Interface de décision agnostique, un adaptateur par backend | annonces de Jev et de Laya ([journal du 2026-09-30](research-log.md)) | aucun module ne dépend d'un fournisseur ; le banc compare les backends sur le même protocole | [ADR 0002](../adr/0002-port-de-decision-agnostique.md) |
+| Model-agnostic decision interface, one adapter per backend | announcements from Jev and Laya ([log of 2026-09-30](research-log.md)) | no module depends on a provider; the bench compares backends on the same protocol | [ADR 0002](../adr/0002-model-agnostic-decision-port.md) |

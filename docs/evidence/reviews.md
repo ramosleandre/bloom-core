@@ -1,6 +1,6 @@
-# Reviews qui ont changé une PR (O2)
+# Reviews that changed a PR (O2)
 
-> Au moins 15 PR relues sur l'année (l'historique est sur GitHub) et au moins 3 cas où une review a mené à un changement avant le merge, présentés ici.
+> At least 15 PRs reviewed over the year (the history is on GitHub) and at least 3 cases where a review led to a change before the merge, presented here.
 
-| Date | PR | Qui a relu | Remarque | Changement fait |
+| Date | PR | Reviewer | Comment | Change made |
 |---|---|---|---|---|

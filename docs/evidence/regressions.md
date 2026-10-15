@@ -1,14 +1,14 @@
-# Régressions attrapées (O2)
+# Regressions caught (O2)
 
-> Au moins 3 régressions attrapées par les tests, documentées avant fin mars ; au moins un cas où la CI a bloqué une PR cassée avant `main`.
-> Le guide : *"A test that has never caught anything proves nothing; a test that stopped a broken release proves everything."*
+> At least 3 regressions caught by tests, documented before end of March; at least one case where CI blocked a broken PR before `main`.
+> The guide: *"A test that has never caught anything proves nothing; a test that stopped a broken release proves everything."*
 
-## Régressions attrapées par un test
+## Regressions caught by a test
 
-| Date | Ce qui a cassé | Test qui l'a attrapée | PR | Correction |
+| Date | What broke | Test that caught it | PR | Fix |
 |---|---|---|---|---|
 
-## PR bloquées par la CI
+## PRs blocked by CI
 
-| Date | PR | Étape de la CI | Ce qui était cassé |
+| Date | PR | CI step | What was broken |
 |---|---|---|---|

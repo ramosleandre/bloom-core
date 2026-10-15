@@ -1,26 +1,26 @@
-# NNNN · Titre court de la décision
+# NNNN · Short title of the decision
 
-> Format exigé par la track (O2). Un ADR s'écrit au moment où la décision se prend. Un ADR accepté ne se modifie plus : pour revenir dessus, on en écrit un nouveau qui le remplace, et on note ici « remplacé par NNNN ».
+> Format required by the track (O2). An ADR is written when the decision is made. An accepted ADR is never edited again: to revisit it, write a new one that supersedes it, and note "superseded by NNNN" here.
 
-- **Date** : AAAA-MM-JJ
-- **Statut** : proposé · accepté · remplacé par NNNN
-- **Décideurs** :
+- **Date**: YYYY-MM-DD
+- **Status**: proposed · accepted · superseded by NNNN
+- **Deciders**:
 
-## Contexte et problème
+## Context and problem
 
-Ce qui oblige à décider maintenant, en quelques lignes.
+What forces a decision now, in a few lines.
 
-## Options envisagées
+## Options considered
 
-Au moins deux, vraiment pesées.
+At least two, genuinely weighed.
 
 1. …
 2. …
 
-## Option retenue
+## Chosen option
 
-## Raison
+## Rationale
 
-## Conséquences acceptées
+## Accepted consequences
 
-Ce que la décision coûte : dépendance, complexité, performance, dette.
+What the decision costs: dependency, complexity, performance, debt.

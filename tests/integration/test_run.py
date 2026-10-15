@@ -1,6 +1,6 @@
-"""Chemin critique (O2) : un run complet, de bout en bout, avec les mocks des 4 blocs.
+"""Critical path (O2): a full run, end to end, with the mocks of the 4 blocks.
 
-Si un de ces tests casse, le produit est inutilisable ou dangereux.
+If one of these tests breaks, the product is unusable or dangerous.
 """
 
 from __future__ import annotations
@@ -41,39 +41,39 @@ async def run(
     return state, surface, audit
 
 
-async def test_une_action_externe_refusee_n_est_jamais_executee() -> None:
+async def test_a_rejected_external_action_is_never_executed() -> None:
     ui = MockInterface(pick="reply.send", verdict="reject")
     state, surface, audit = await run(ui, ranker=MockRanker(assess_as=Criticality.SAFE))
     assert state.status is RunStatus.CANCELLED
-    assert state.effective is Criticality.EXTERNAL  # le modèle a dit SAFE, le plancher a gagné
+    assert state.effective is Criticality.EXTERNAL  # the model said SAFE, the floor won
     assert ui.approvals and not surface.executed
-    assert audit.runs == [state]  # l'audit voit l'état final, une seule fois
+    assert audit.runs == [state]  # the audit sees the final state, exactly once
 
 
-async def test_une_action_validee_est_executee() -> None:
+async def test_an_approved_action_is_executed() -> None:
     state, surface, _ = await run(MockInterface(pick="reply.send", verdict="approve"))
     assert state.status is RunStatus.DONE
     assert [a.action_id for a in surface.executed] == ["reply.send"]
 
 
-async def test_fermer_le_menu_annule_sans_rien_executer() -> None:
+async def test_closing_the_menu_cancels_without_executing_anything() -> None:
     state, surface, _ = await run(MockInterface(pick=None))
     assert state.status is RunStatus.CANCELLED and not surface.executed
 
 
-async def test_un_bloc_qui_plante_donne_un_run_echoue_et_audite() -> None:
+async def test_a_crashing_block_gives_a_failed_and_audited_run() -> None:
     class BrokenSurface(MockSurface):
         async def observe(self, trigger: Trigger) -> Observation:
-            raise RuntimeError("permission Accessibilité retirée")
+            raise RuntimeError("Accessibility permission revoked")
 
     state, _, audit = await run(MockInterface(), surface=BrokenSurface())
     assert state.status is RunStatus.FAILED
-    assert "Accessibilité" in (state.error or "")
+    assert "Accessibility" in (state.error or "")
     assert audit.runs == [state]
 
 
-async def test_chaque_etape_est_chronometree() -> None:
-    state, _, _ = await run(MockInterface(pick="text.summarize"))  # SAFE : pas de validation
+async def test_every_step_is_timed() -> None:
+    state, _, _ = await run(MockInterface(pick="text.summarize"))  # SAFE: no approval
     assert state.status is RunStatus.DONE
     steps = {"observe", "assemble", "rank", "menu_latency", "resolve", "assess", "execute"}
     assert steps <= state.timings_ms.keys()

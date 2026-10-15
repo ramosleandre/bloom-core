@@ -1,1 +1,1 @@
-"""Bloc B · Contexte & mémoire."""
+"""Block B · Context & memory."""

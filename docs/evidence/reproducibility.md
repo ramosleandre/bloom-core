@@ -1,6 +1,6 @@
-# Test de reproductibilité (O2)
+# Reproducibility test (O2)
 
-> Avant fin mars : une personne extérieure à l'équipe installe et lance le projet avec la seule documentation. On note qui, quand, combien de temps, où elle a bloqué, et ce qu'on a corrigé dans la documentation en conséquence.
+> Before end of March: someone outside the team installs and runs the project using only the documentation. We record who, when, how long it took, where they got stuck, and what we fixed in the documentation as a result.
 
-| Date | Testeur (hors équipe) | Machine | Durée | Où ça a bloqué | Corrections (PR) |
+| Date | Tester (outside the team) | Machine | Duration | Where they got stuck | Fixes (PR) |
 |---|---|---|---|---|---|

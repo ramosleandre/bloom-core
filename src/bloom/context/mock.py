@@ -1,7 +1,7 @@
-"""Faux bloc B : transforme l'observation en fragments étiquetés, sans mémoire ni budget réel.
+"""Fake block B: turns the observation into labeled fragments, with no memory and no real budget.
 
-Sert aussi au banc du lab (lab/decision/bench.py) en attendant le vrai assembleur (v0.2) ;
-quand il existera, le banc devra l'utiliser à la place de ce mock.
+Also used by the lab bench (lab/decision/bench.py) until the real assembler exists (v0.2);
+once it does, the bench must use it instead of this mock.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ class MockContext:
     async def assemble(self, obs: Observation, budget_tokens: int) -> ContextBundle:
         raw = [
             ("device.app", obs.app_bundle_id, Trust.SYSTEM),
-            ("device.window", obs.window_title, Trust.UNTRUSTED),  # titre d'un mail = écrit par un tiers
+            ("device.window", obs.window_title, Trust.UNTRUSTED),  # email subject = written by a third party
             ("device.selection", obs.selected_text, Trust.UNTRUSTED),
             ("device.url", obs.url, Trust.UNTRUSTED),
         ]

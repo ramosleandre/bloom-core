@@ -6,7 +6,7 @@ from bloom.core.contracts import ActionPlan, Candidate
 from bloom.interface.mock import MockInterface
 
 
-async def test_pick_top_prend_le_premier_candidat() -> None:
+async def test_pick_top_takes_the_first_candidate() -> None:
     plan = ActionPlan(
         request_id=uuid4(),
         candidates=[
@@ -20,6 +20,6 @@ async def test_pick_top_prend_le_premier_candidat() -> None:
     assert choice.action_id == "a"
 
 
-async def test_fermer_le_menu_rend_none() -> None:
+async def test_closing_the_menu_returns_none() -> None:
     plan = ActionPlan(request_id=uuid4(), candidates=[], decided_by="test", latency_ms=0)
     assert (await MockInterface(pick=None).show_pie(plan)).action_id is None

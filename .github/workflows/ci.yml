@@ -1,5 +1,5 @@
-# Lancée à chaque PR et à chaque push sur main. Le job `check` est obligatoire pour merger
-# (protection de la branche main). Son historique (onglet Actions) est une preuve O2.
+# Runs on every PR and every push to main. The `check` job is required to merge
+# (main branch protection). Its history (Actions tab) is O2 evidence.
 name: ci
 
 on:
@@ -15,7 +15,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: make setup
       - run: make check
-      - name: Banc de décision (backends hors ligne, jeu d'exemple)
+      - name: Decision bench (offline backends, sample set)
         run: make bench out=lab/results/ci
       - uses: actions/upload-artifact@v4
         with:

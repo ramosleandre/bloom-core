@@ -1,35 +1,35 @@
 # Performance (PERF)
 
-> Objectif complémentaire D du suivi Epitech : passer de « ça marche » à « ça tient, et voici de combien ». Choisir un axe, mesurer le point de départ, diagnostiquer, changer une chose précise, remesurer, lire l'écart. Une ligne par mesure officielle, y compris les changements qui n'ont rien gagné.
+> Complementary objective D of the Epitech follow-up: go from "it works" to "it holds up, and here is by how much". Choose an axis, measure the starting point, diagnose, change one specific thing, measure again, read the difference. One row per official measurement, including changes that gained nothing.
 
-## Note de choix (brouillon, à finaliser avant fin décembre)
+## Choice note (draft, to finalize before end of December)
 
-**Axe : temps de réponse.** Un pie menu n'a de valeur que s'il apparaît tout de suite. S'il met une ou deux secondes, l'utilisateur va plus vite à la main et Bloom ne sert à rien. C'est aussi notre problème dur ([`../hard-problem.md`](../hard-problem.md)) : ces mesures servent deux fois.
+**Axis: response time.** A pie menu is only worth something if it appears right away. If it takes one or two seconds, the user is faster doing it by hand and Bloom is useless. It is also our hard problem ([`../hard-problem.md`](../hard-problem.md)): these measurements serve twice.
 
-**La qualité des choix est le garde-fou.** Gagner de la vitesse en proposant de moins bonnes actions n'est pas un gain : `top3` ne doit pas baisser d'une boucle à l'autre.
+**Choice quality is the safeguard.** Gaining speed by proposing worse actions is not a gain: `top3` must not drop from one loop to the next.
 
-| Indicateur | Formule | Outil | Conditions |
+| Indicator | Formula | Tool | Conditions |
 |---|---|---|---|
-| `menu_latency` (principal) | heure d'affichage du menu moins heure d'appui sur le raccourci ; p50 et p95 | `RunState.timings_ms` dans l'audit, script de `lab/bloom/` | Mac de référence, 100 runs dont 5 d'échauffement exclus, scénario fixe |
-| `decision_latency` | durée d'un appel à `Ranker.rank()` ; p50 et p95 par backend | `make bench` | même jeu, 1 appel d'échauffement |
-| `top3` (garde-fou) | part des situations où une action attendue est dans les 3 premières | `make bench` | jeu d'au moins 50 situations, figé |
+| `menu_latency` (main) | menu display time minus hotkey press time; p50 and p95 | `RunState.timings_ms` in the audit, script in `lab/bloom/` | reference Mac, 100 runs with the first 5 (warm-up) excluded, fixed scenario |
+| `decision_latency` | duration of one call to `Ranker.rank()`; p50 and p95 per backend | `make bench` | same set, 1 warm-up call |
+| `top3` (safeguard) | share of situations where an expected action is in the top 3 | `make bench` | frozen set of at least 50 situations |
 
-Suivi en plus, hors cible : `personalization_lift` (gain du top 1 avec la mémoire), à partir de la v1.0.
+Also tracked, outside the target: `personalization_lift` (top-1 gain with memory), from v1.0 onwards.
 
-**Cible (proposée) :** `menu_latency` p95 ≤ 300 ms en mai, sans que `top3` passe sous 80 %. Ce sur quoi on s'appuie : un menu doit sembler instantané (les ordres de grandeur classiques de l'IHM placent l'instantané autour de 0,1 s et la rupture du fil de pensée autour de 1 s), et les modèles de décision hébergés annoncent 70 à 500 ms par appel. Atteindre la cible demandera sans doute de calculer le classement avant l'appui ou de passer en local : c'est une hypothèse à confirmer par le diagnostic, pas une décision.
+**Target (proposed):** `menu_latency` p95 ≤ 300 ms in May, without `top3` falling below 80%. What we base this on: a menu must feel instantaneous (the classic HCI orders of magnitude put "instantaneous" at around 0.1 s and the break in the flow of thought at around 1 s), and hosted decision models advertise 70 to 500 ms per call. Reaching the target will probably require computing the ranking before the key press or going local: this is a hypothesis to be confirmed by the diagnosis, not a decision.
 
-**Pistes d'optimisation**, à ne choisir qu'après le diagnostic : classement anticipé au changement d'application, backend local plutôt qu'hébergé, cache de l'assemblage du contexte, moins de candidats envoyés au modèle.
+**Optimization leads**, to be chosen only after the diagnosis: ranking ahead of time on application switch, local backend rather than hosted, caching of context assembly, fewer candidates sent to the model.
 
-## Protocole
+## Protocol
 
-Règles et indicateurs : [`lab/README.md`](../../lab/README.md). Mesure de bout en bout : [`lab/bloom/README.md`](../../lab/bloom/README.md).
+Rules and indicators: [`lab/README.md`](../../lab/README.md). End-to-end measurement: [`lab/bloom/README.md`](../../lab/bloom/README.md).
 
-## Mesures
+## Measurements
 
-| Date | Commit | Indicateur | Valeur | Conditions | Fichier de résultats |
+| Date | Commit | Indicator | Value | Conditions | Results file |
 |---|---|---|---|---|---|
 
-## Boucles d'optimisation
+## Optimization loops
 
-| Boucle | Hypothèse, écrite avant | Gain attendu | Changement (commit) | Avant | Après | Écart (absolu et %) | Hypothèse vérifiée ? | Compromis accepté | Non-régression OK ? |
+| Loop | Hypothesis, written beforehand | Expected gain | Change (commit) | Before | After | Difference (absolute and %) | Hypothesis confirmed? | Accepted trade-off | Non-regression OK? |
 |---|---|---|---|---|---|---|---|---|---|

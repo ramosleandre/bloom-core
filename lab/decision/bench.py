@@ -1,12 +1,12 @@
-"""Prototype de décision (O1) : compare des backends de décision sur le même jeu, avec le même protocole.
+"""Decision prototype (O1): compares decision backends on the same set, with the same protocol.
 
     make bench
     make bench backends=rules,laya data=lab/datasets/situations.jsonl out=lab/results/2027-01-20_decision
 
-Protocole : chaque situation devient une Observation, puis un ContextBundle (via l'assembleur du
-bloc B, simulé tant que le vrai n'existe pas), puis chaque backend classe les actions disponibles
-à travers le vrai DecisionRanker du bloc A. Mesures : top1, top3, latence p50 et p95.
-La ligne « hasard » donne le score d'un classement aléatoire : un backend qui ne la bat pas ne sert à rien.
+Protocol: each situation becomes an Observation, then a ContextBundle (through block B's assembler,
+mocked until the real one exists), then each backend ranks the available actions through
+block A's real DecisionRanker. Metrics: top1, top3, p50 and p95 latency.
+The "random" row gives the score of a random ranking: a backend that does not beat it is useless.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ def load(path: Path) -> list[Situation]:
 
 
 def chance(s: Situation, k: int) -> float:
-    """Probabilité qu'un classement au hasard place une action attendue dans les k premières."""
+    """Probability that a random ranking puts an expected action in the top k."""
     n = len(s.available)
     e = len(set(s.expected) & set(s.available))
     k = min(k, n)
@@ -79,7 +79,7 @@ def percentile(values: list[float], q: int) -> float | None:
 
 async def score_backend(name: str, situations: list[Situation], warmup: int) -> Score:
     ranker = DecisionRanker([BACKENDS[name]()], top_k=TOP_K)
-    assembler = MockContext()  # À remplacer par l'assembleur réel du bloc B dès qu'il existe.
+    assembler = MockContext()  # Replace with block B's real assembler as soon as it exists.
     ranked: dict[str, list[str]] = {}
     latencies: list[float] = []
     hits1 = hits3 = 0
@@ -95,7 +95,7 @@ async def score_backend(name: str, situations: list[Situation], warmup: int) -> 
         bundle = await assembler.assemble(obs, 4000)
         actions = [ActionDescriptor(id=a, label=a, floor=Criticality.SAFE) for a in s.available]
         if i == 0:
-            for _ in range(warmup):  # échauffement, non mesuré
+            for _ in range(warmup):  # warmup, not measured
                 await ranker.rank(bundle, actions)
         start = time.perf_counter()
         plan = await ranker.rank(bundle, actions)
@@ -141,11 +141,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("--backends", default="rules", help="noms séparés par des virgules")
+    parser.add_argument("--backends", default="rules", help="comma-separated names")
     parser.add_argument("--data", type=Path, default=Path("lab/datasets/situations.sample.jsonl"))
-    parser.add_argument(
-        "--out", type=Path, help="dossier de sortie (par défaut lab/results/local/<horodatage>)"
-    )
+    parser.add_argument("--out", type=Path, help="output folder (default: lab/results/local/<timestamp>)")
     parser.add_argument("--warmup", type=int, default=1)
     args = parser.parse_args()
 
@@ -155,9 +153,9 @@ def main() -> None:
     chance1 = statistics.fmean(chance(s, 1) for s in situations)
     chance3 = statistics.fmean(chance(s, TOP_K) for s in situations)
 
-    print(f"Banc de décision : {len(situations)} situations ({args.data})")
+    print(f"Decision bench: {len(situations)} situations ({args.data})")
     print(f"{'backend':<16}{'top1':>7}{'top3':>7}{'p50 ms':>9}{'p95 ms':>9}")
-    print(f"{'hasard':<16}{chance1:>7.2f}{chance3:>7.2f}{'-':>9}{'-':>9}")
+    print(f"{'random':<16}{chance1:>7.2f}{chance3:>7.2f}{'-':>9}{'-':>9}")
     for sc in scores:
         print(f"{sc.backend:<16}{sc.top1:>7.2f}{sc.top3:>7.2f}{fmt(sc.p50_ms):>9}{fmt(sc.p95_ms):>9}")
 
@@ -176,7 +174,7 @@ def main() -> None:
         "scores": [sc.model_dump() for sc in scores],
     }
     (out / "results.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
-    print(f"Résultats : {out / 'results.json'}")
+    print(f"Results: {out / 'results.json'}")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-# Python et outils
+# Python and tools
 .venv/
 __pycache__/
 *.egg-info/
@@ -8,18 +8,18 @@ __pycache__/
 .coverage
 htmlcov/
 
-# Secrets et données locales (jamais dans le dépôt)
+# Secrets and local data (never in the repo)
 .env
 .bloom/
 lab/datasets/private/
 
-# Mesures d'essai (les mesures officielles vont dans lab/results/AAAA-MM-JJ_nom/ et sont commitées)
+# Trial measurements (official ones go to lab/results/YYYY-MM-DD_name/ and are committed)
 lab/results/local/
 lab/results/ci/
 
-# Shell Tauri (bloc D)
+# Tauri shell (block D)
 node_modules/
 shell/src-tauri/target/
 
-# Système
+# System
 .DS_Store

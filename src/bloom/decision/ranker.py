@@ -1,7 +1,7 @@
-"""Façade du bloc A : classe les actions (rank) et évalue leur risque (assess) via des DecisionPort.
+"""Block A facade: ranks the actions (rank) and assesses their risk (assess) through DecisionPorts.
 
-Les backends sont essayés dans l'ordre de préférence, parmi ceux que la policy autorise pour
-la sensibilité du contexte. Un backend qui échoue ou dépasse le délai cède sa place au suivant.
+Backends are tried in order of preference, among those the policy allows for the context's
+sensitivity. A backend that fails or times out gives way to the next one.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from bloom.core.policy import allowed_backends
 
 
 class DecisionUnavailable(RuntimeError):
-    """Aucun backend autorisé n'a pu répondre."""
+    """No allowed backend could answer."""
 
 
 class DecisionRanker:
@@ -47,9 +47,9 @@ class DecisionRanker:
         for backend in allowed_backends(bundle, self.backends):
             try:
                 return await asyncio.wait_for(backend.decide(bundle, question), self.timeout_s)
-            except Exception as exc:  # repli : on passe au backend suivant
+            except Exception as exc:  # fallback: move on to the next backend
                 failures.append(f"{backend.model_id}: {exc!r}")
-        raise DecisionUnavailable("; ".join(failures) or "aucun backend autorisé pour ce contexte")
+        raise DecisionUnavailable("; ".join(failures) or "no backend allowed for this context")
 
     async def rank(self, bundle: ContextBundle, actions: list[ActionDescriptor]) -> ActionPlan:
         start = time.perf_counter()
@@ -57,7 +57,7 @@ class DecisionRanker:
         question = Question(
             id="rank",
             kind="choice",
-            prompt="Quelle action l'utilisateur veut-il lancer maintenant ?",
+            prompt="Which action does the user want to run now?",
             choices=list(labels),
         )
         decision = await self._ask(bundle, question)
@@ -76,13 +76,13 @@ class DecisionRanker:
         question = Question(
             id="assess",
             kind="choice",
-            prompt=f"Niveau de risque de cette action : {action.preview}",
+            prompt=f"Risk level of this action: {action.preview}",
             choices=[c.name for c in Criticality],
         )
         try:
             decision = await self._ask(bundle, question)
         except DecisionUnavailable:
-            return None  # pas d'avis : la policy appliquera le plancher seul
+            return None  # no opinion: the policy will apply the floor alone
         if decision.choice is None or decision.choice not in Criticality.__members__:
             return None
         if decision.confidence < self.min_confidence:

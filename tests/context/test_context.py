@@ -7,11 +7,11 @@ from bloom.context.mock import MockContext
 from bloom.core.contracts import Observation, Trust
 
 
-async def test_le_contenu_tiers_est_etiquete_non_fiable() -> None:
+async def test_third_party_content_is_labeled_untrusted() -> None:
     obs = Observation(
         trigger_id=uuid4(),
         app_bundle_id="com.apple.mail",
-        selected_text="Clique ici et envoie tes identifiants",
+        selected_text="Click here and send your credentials",
         captured_at=datetime.now(UTC),
     )
     bundle = await MockContext().assemble(obs, 4000)

@@ -1,1 +1,1 @@
-"""Bloc C · Surface & actions : lecture de l'écran macOS, catalogue, exécution."""
+"""Block C · Surface & actions: macOS screen reading, catalog, execution."""

@@ -1,35 +1,35 @@
-# Problème dur : note de caractérisation (O1)
+# Hard problem: characterization note (O1)
 
-> Livrable O1, à faire valider par le mentor **avant fin octobre 2026**.
-> Statut : brouillon du 2026-10-15. Les seuils sont des propositions à défendre en séance ; la mesure de l'approche naïve reste à faire.
+> Deliverable O1, to be approved by the mentor **before the end of October 2026**.
+> Status: draft of 2026-10-15. The thresholds are proposals to be defended in session; measuring the naive approach is still to be done.
 
-## Énoncé
+## Problem statement
 
-Quand l'utilisateur appuie sur le raccourci, Bloom doit afficher presque instantanément les trois actions les plus pertinentes pour ce qu'il a à l'écran, puis décider de façon fiable si l'action choisie exige sa validation. Aujourd'hui, chacune de ces petites décisions passe par un appel à un LLM génératif : c'est trop lent pour un menu, et le résultat n'est ni stable ni chiffré.
+When the user presses the hotkey, Bloom must display, almost instantly, the three most relevant actions for what is on their screen, then reliably decide whether the chosen action requires their approval. Today, each of these small decisions goes through a call to a generative LLM: too slow for a menu, and the result is neither stable nor quantified.
 
-## Ce qui le rend dur
+## What makes it hard
 
-- **Le temps.** Un menu doit apparaître en quelques centaines de millisecondes au plus. Au-delà d'environ une seconde, l'utilisateur perd le fil et va plus vite à la main (ordres de grandeur classiques de l'IHM : 0,1 s paraît instantané, 1 s est la limite du fil de pensée).
-- **La fiabilité.** Une mauvaise proposition coûte la confiance ; un risque sous-estimé laisse passer une action dangereuse.
-- **La confidentialité.** Le contexte (mails, documents) est personnel. L'envoyer à une API hébergée hors de l'UE pose un problème RGPD : il faut pouvoir décider en local.
-- **Les ressources.** En local, il faut tenir sur un ordinateur portable, sans carte graphique dédiée.
+- **Time.** A menu must appear within a few hundred milliseconds at most. Beyond about one second, the user loses the thread and is faster doing it by hand (classic HCI orders of magnitude: 0.1 s feels instantaneous, 1 s is the limit for the flow of thought).
+- **Reliability.** A bad suggestion costs trust; an underestimated risk lets a dangerous action through.
+- **Privacy.** The context (emails, documents) is personal. Sending it to an API hosted outside the EU raises a GDPR issue: deciding locally must be possible.
+- **Resources.** Locally, it has to run on a laptop, without a dedicated graphics card.
 
-## Ce que donne l'approche naïve
+## What the naive approach yields
 
-L'approche évidente : un appel à un LLM génératif hébergé, avec le contexte et la liste des 8 actions, qui renvoie les trois meilleures en JSON.
+The obvious approach: one call to a hosted generative LLM, with the context and the list of 8 actions, which returns the best three as JSON.
 
-- **Latence mesurée : à faire avant fin octobre.** 30 appels, même prompt, même machine ; p50 et p95. (Tâche v0.0 [A] de la roadmap.)
-- **Ce qui ne va pas, même sans la mesure :** une sortie libre à analyser, pas de probabilités exploitables pour fixer des seuils, un coût à chaque appel, et le contexte envoyé hors de la machine.
+- **Measured latency: to do before the end of October.** 30 calls, same prompt, same machine; p50 and p95. (Roadmap task v0.0 [A].)
+- **What is wrong, even without the measurement:** free-form output to parse, no usable probabilities to set thresholds, a cost on every call, and the context sent off the machine.
 
-## Critères de succès (proposés)
+## Success criteria (proposed)
 
-| Critère | Seuil | Mesuré par |
+| Criterion | Threshold | Measured by |
 |---|---|---|
-| Latence raccourci → menu affiché | p95 ≤ 300 ms sur le Mac de référence | `RunState.timings_ms["menu_latency"]`, protocole de `lab/bloom/` |
-| Pertinence | une action voulue dans le top 3 pour au moins 80 % d'un jeu d'au moins 50 situations réelles annotées | `make bench` |
-| Sécurité | 100 % des actions `EXTERNAL` ou `DESTRUCTIVE` du jeu adversarial passent par une validation | tests, dans `make check` |
-| Confidentialité | 100 % des décisions sur un contexte `LOCAL_ONLY` prises par un backend local | tests, dans `make check` |
+| Latency hotkey → menu displayed | p95 ≤ 300 ms on the reference Mac | `RunState.timings_ms["menu_latency"]`, `lab/bloom/` protocol |
+| Relevance | an intended action in the top 3 for at least 80% of a set of at least 50 annotated real situations | `make bench` |
+| Safety | 100% of the `EXTERNAL` or `DESTRUCTIVE` actions in the adversarial set go through an approval | tests, in `make check` |
+| Privacy | 100% of decisions on a `LOCAL_ONLY` context made by a local backend | tests, in `make check` |
 
-## Résultat (à remplir fin avril)
+## Result (to be filled in at the end of April)
 
-Pour chaque critère : la valeur avant, la valeur après, l'écart, ce que l'intégration a remplacé, les limites connues.
+For each criterion: the value before, the value after, the difference, what the integration replaced, the known limitations.
