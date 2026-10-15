@@ -69,4 +69,4 @@ Vérifiées par `make check` quand c'est possible.
 | une mesure officielle | `lab/results/AAAA-MM-JJ_nom/` puis `docs/evidence/perf.md` |
 | une source de veille lue, avec une conclusion | `docs/evidence/research-log.md` |
 
-Commits, PR et review : [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Commits, PR et review : [`CONTRIBUTING.md`](CONTRIBUTING.md). N'ajoute jamais de ligne `Co-Authored-By` à un message de commit.
