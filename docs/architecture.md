@@ -4,6 +4,36 @@
 
 ## 1. Overview
 
+**Prototype status (2026-10-23):** D now has an interactive React/TypeScript shell and an
+authenticated loopback HTTP/WebSocket server. `make ui` / `make desktop` launch the Tauri
+frontend with a main window, a transparent pie overlay and Vite hot reload. Native D code
+captures the cursor at invocation, clamps the overlay to monitor bounds and registers a
+global shortcut on X11/macOS. Native Wayland uses compositor-controlled placement and a
+focused-app shortcut; see [ADR 0008](adr/0008-cursor-overlay.md). `make ui-preview` is an optional
+browser preview. The native Linux app has been compiled and exercised through WebKit automation.
+The diagram below
+remains the macOS product target; context capture and actions still use mocks.
+
+Linux cursor capture reads the X11 desktop root independently of the main window, and native
+shortcut handling preserves that original anchor. Bridge webviews hold a Web Lock so the
+desktop connection remains eligible for background work while minimized. GNOME Wayland's
+XWayland cursor restrictions are handled by an optional GNOME 46 Shell adapter; see
+[ADR 0009](adr/0009-desktop-cursor.md) and [ADR 0010](adr/0010-optional-gnome-adapter.md).
+The helper supplies the current cursor and Ctrl+Space over the session bus; Tauri keeps the
+same pie UI and Python transport. `make ui-gnome` selects the XWayland window backend. These
+are D-only changes; core contracts are unchanged.
+
+The GNOME launch target first probes the live Shell service and reports disabled extension
+support before starting. On Linux the main window uses GTK's native titlebar controls with
+a process-local layout, independently of the desktop's global button layout; see
+[ADR 0011](adr/0011-native-linux-window-controls.md).
+
+On GNOME, the optional path is `Shell extension → session D-Bus → Linux native adapter →
+shared Tauri UI`. Its connection owns the shortcut lease; the extension releases it when
+that client disconnects. The native adapter serializes RPCs and signal processing on one
+worker so a concurrent reader cannot consume an RPC reply. Windows/macOS do not compile
+the Linux D-Bus module. Installation and activation: [`../shell/gnome/README.md`](../shell/gnome/README.md).
+
 ```mermaid
 flowchart TB
     U(["User on their Mac"])
@@ -101,6 +131,21 @@ Source of truth: `src/bloom/core/contracts.py`. The shell's TypeScript types wil
 | `RunState` | core | audit, lab | the whole run, timings per step |
 
 The block facades are defined in the same file: `DecisionPort` and `Generator` (models), `Ranker` (A), `ContextAssembler` (B), `Surface` (C), `Interface` (D), `Audit` (core).
+
+D's `LiveInterface` implements the existing `Interface` protocol without changing these
+contracts. It sends `ActionPlan` / `ApprovalRequest` to the shell and awaits a correlated
+`MenuChoice` / `ApprovalResponse`. `ShellBridge` receives a runner from `app.py`; it imports
+no other block or core implementation. Its state snapshots cover run start, human interaction
+points and completion, rather than every internal pipeline step. The final `RunState` is
+audited by the existing pipeline and added to the activity view. TypeScript contracts are
+generated from Pydantic JSON Schema. Transport and launch details: [`../shell/README.md`](../shell/README.md).
+
+The browser's session token is passed in the launch URL fragment and first WebSocket frame.
+The server validates Host and Origin and binds only to `127.0.0.1`. In the desktop prototype,
+the launcher passes the same authenticated URL to the Tauri process. D rejects stale replies,
+unoffered actions and edits; the pending approval expires on the server, and losing all shell
+connections cancels/rejects pending input. This adds protection at D's boundary; the core's
+existing edit-validation debt remains for any future interfaces that expose editing.
 
 ## 5. Safety rules (`policy.py`)
 

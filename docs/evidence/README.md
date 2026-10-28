@@ -15,6 +15,7 @@ Objectives: **O1** tech watch and hard problem · **O2** structured and reliable
 | [`regressions.md`](regressions.md) | regressions caught by tests, PRs blocked by CI | O2 |
 | [`reviews.md`](reviews.md) | reviews that changed a PR | O2 |
 | [`tech-debt.md`](tech-debt.md) | accepted debt, measured quality, disabled rules | O2 |
+| [`ui-prototype.md`](ui-prototype.md) | connected D interface, validation results and remaining native checks | O2 |
 | [`reproducibility.md`](reproducibility.md) | installation of the project by an outsider | O2 |
 | [`perf.md`](perf.md) | the performance axis, its indicators, the history of measurements and optimizations | PERF |
 | [`experts.md`](experts.md) | topics submitted to experts, and what we did with them | EXP |

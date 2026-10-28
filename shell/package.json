@@ -1,0 +1,40 @@
+{
+  "name": "bloom-shell",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "desktop": "npm run contracts && npm run build && uv run --directory .. python -m bloom --desktop",
+    "contracts": "node scripts/contracts.mjs",
+    "contracts:check": "node scripts/contracts.mjs --check",
+    "build": "tsc --noEmit && vite build",
+    "check": "npm run contracts:check && prettier --check . && tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "playwright test",
+    "test:gnome": "node --test tests/gnome-service.test.mjs",
+    "test:gnome-native": "dbus-run-session -- cargo test --manifest-path src-tauri/Cargo.toml --locked gnome::tests::session_bus_contract -- --ignored",
+    "gnome:pack": "node scripts/gnome.mjs pack",
+    "gnome:install": "node scripts/gnome.mjs install",
+    "gnome:remove": "node scripts/gnome.mjs remove",
+    "gnome:status": "node scripts/gnome.mjs status",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "~2.11.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.0",
+    "@tauri-apps/cli": "~2.11.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "json-schema-to-typescript": "^15.0.0",
+    "prettier": "^3.6.0",
+    "typescript": "~5.9.0",
+    "vite": "^6.4.0"
+  }
+}

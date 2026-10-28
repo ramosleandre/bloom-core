@@ -21,3 +21,48 @@ jobs:
         with:
           name: bench
           path: lab/results/ci
+
+  shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: shell/package-lock.json
+      - run: make ui-setup
+      - run: make ui-check
+      - run: npm --prefix shell run test:gnome
+      - run: make ui-build
+      - run: npm --prefix shell exec -- playwright install --with-deps chromium
+      - run: npm --prefix shell test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: shell-browser-tests
+          path: shell/test-results/
+
+  tauri:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: shell/package-lock.json
+      - uses: dtolnay/rust-toolchain@1.86.0
+      - name: Install native development libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libssl-dev librsvg2-dev libdbus-1-dev gjs dbus-daemon
+      - run: npm --prefix shell ci
+      - run: npm --prefix shell run build
+      - name: Check the actual Tauri app
+        working-directory: shell/src-tauri
+        run: cargo test --locked
+      - name: Test the GNOME adapter on a private session bus
+        working-directory: shell
+        run: npm run test:gnome-native

@@ -8,7 +8,31 @@
 
 - Current version: **v0.0, foundation**
 - Next track deadline: **end of October**, the hard-problem note and the tech watch setup {O1}
-- Last updated: 2026-10-15
+- Last updated: 2026-10-23
+
+### D prototype available
+
+- [x] [D] Browser UI connected to the existing Python demo: real selection, approval/rejection,
+  activity explanations, generated TypeScript contracts, keyboard controls and local preferences
+- [x] [D] Live bridge tests and browser tests against the real pipeline, with isolated audit logs
+- [x] [D] Compile the Tauri frontend and validate native main/pie windows and approval responses on Linux
+- [x] [D] Transparent radial overlay with cursor positioning and a native shortcut on the
+  Linux X11/XWayland path, preserving the existing Python action flow
+- [x] [D] Preserve the native trigger anchor and validate a run with the main window minimized;
+  use a desktop-root cursor query on Linux X11
+- [x] [D] Optional GNOME 46 compositor adapter implemented and packaged; cursor/shortcut
+  service, Rust client, ownership cleanup and private-bus tests
+- [x] [D] Activate the GNOME adapter and verify actual Shell shortcut delivery, cursor placement
+  outside Bloom and action completion while minimized through the native titlebar control
+- [x] [D] Check the live GNOME service before launch and explain disabled extension support
+- [ ] [D] Validate shortcut delivery with a native Wayland client focused and mixed-scale monitors
+
+`make ui` / `make desktop` are the Tauri development entry points, including Vite hot reload.
+`make ui-preview` provides the connected browser preview. The native Linux prototype has
+been compiled and smoke-tested; it is not yet a packaged desktop release.
+On GNOME Wayland use `make ui-gnome`, which verifies the active Shell service before launching.
+The broader v0.2 macOS/hotkey/packaging
+milestones below remain open.
 
 ## The principle
 

@@ -20,6 +20,10 @@ lab/results/ci/
 # Tauri shell (block D)
 node_modules/
 shell/src-tauri/target/
+shell/src-tauri/gen/
+shell/dist/
+shell/test-results/
+shell/playwright-report/
 
 # System
 .DS_Store

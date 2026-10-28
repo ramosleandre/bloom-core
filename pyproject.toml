@@ -3,7 +3,7 @@ name = "bloom"
 version = "0.0.1"
 description = "One hotkey, a pie menu, the right action."
 requires-python = ">=3.12"
-dependencies = ["pydantic>=2.8"]
+dependencies = ["pydantic>=2.8", "aiohttp>=3.12,<4"]
 
 [dependency-groups]
 dev = [

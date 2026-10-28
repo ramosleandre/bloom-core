@@ -1,0 +1,8 @@
+node_modules/
+dist/
+src/contracts.generated.ts
+src-tauri/gen/
+src-tauri/target/
+package-lock.json
+test-results/
+playwright-report/

@@ -1,0 +1,7 @@
+{
+  "uuid": "bloom-desktop@bloom.local",
+  "name": "Bloom Desktop Adapter",
+  "description": "Desktop cursor and shortcut integration for the Bloom Tauri app.",
+  "shell-version": ["46"],
+  "version": 1
+}

@@ -1,0 +1,22 @@
+[package]
+name = "bloom-shell"
+version = "0.0.1"
+description = "Bloom desktop interface"
+edition = "2021"
+rust-version = "1.86"
+
+[build-dependencies]
+tauri-build = { version = "~2.6.3", features = [] }
+
+[dependencies]
+tauri = { version = "~2.11.6", features = ["macos-private-api"] }
+tauri-plugin-global-shortcut = "=2.3.1"
+serde = { version = "1", features = ["derive"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+x11rb = "0.13.2"
+dbus = "0.9.12"
+gtk = "0.18.2"
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
