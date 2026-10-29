@@ -4,7 +4,7 @@ Instructions for AI agents (Claude Code, Codex, Cursor…) and for anyone who to
 
 ## In short
 
-Bloom: on macOS, a hotkey opens a pie menu that suggests the three most useful actions for what is on screen; the chosen action runs, with human approval if it is risky. Overview: [`docs/architecture.md`](docs/architecture.md). Progress: [`docs/roadmap.md`](docs/roadmap.md).
+Bloom: on Linux or macOS, a hotkey opens a pie menu that suggests the three most useful actions for what is on screen; the chosen action runs, with human approval if it is risky. Overview: [`docs/architecture.md`](docs/architecture.md). Progress: [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Commands
 
@@ -27,7 +27,7 @@ Before saying "done": `make check` passes.
 | Core | `src/bloom/core/` | contracts (`contracts.py`), safety rules (`policy.py`), the run (`pipeline.py`), audit |
 | A · Decision | `src/bloom/decision/` | ranks actions, assesses risk; one file per model backend in `adapters/` |
 | B · Context | `src/bloom/context/` | assembles the context, labeled by source, sensitivity and trust |
-| C · Surface | `src/bloom/surface/` | reads the macOS screen, provides the action catalog, prepares and executes actions |
+| C · Surface | `src/bloom/surface/` | reads the screen (Linux and macOS), provides the action catalog, prepares and executes actions |
 | D · Interface | `src/bloom/interface/` + `shell/` | bridge to the Tauri shell: hotkey, pie menu, approval |
 | Composition | `src/bloom/app.py` | the only place that wires the blocks together |
 | Lab | `lab/` | measurements: decision models, performance |

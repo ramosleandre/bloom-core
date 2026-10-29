@@ -25,7 +25,7 @@ The obvious approach: one call to a hosted generative LLM, with the context and 
 
 | Criterion | Threshold | Measured by |
 |---|---|---|
-| Latency hotkey → menu displayed | p95 ≤ 300 ms on the reference Mac | `RunState.timings_ms["menu_latency"]`, `lab/bloom/` protocol |
+| Latency hotkey → menu displayed | p95 ≤ 300 ms on the reference machine | `RunState.timings_ms["menu_latency"]`, `lab/bloom/` protocol |
 | Relevance | an intended action in the top 3 for at least 80% of a set of at least 50 annotated real situations | `make bench` |
 | Safety | 100% of the `EXTERNAL` or `DESTRUCTIVE` actions in the adversarial set go through an approval | tests, in `make check` |
 | Privacy | 100% of decisions on a `LOCAL_ONLY` context made by a local backend | tests, in `make check` |

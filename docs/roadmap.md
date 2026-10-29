@@ -8,7 +8,7 @@
 
 - Current version: **v0.0, foundation**
 - Next track deadline: **end of October**, the hard-problem note and the tech watch setup {O1}
-- Last updated: 2026-10-15
+- Last updated: 2026-10-29
 
 ## The principle
 
@@ -22,14 +22,15 @@ Goal: everyone can code, CI guards the door, both October deliverables go out.
 
 - [x] [A] Repository skeleton: core, mocks of the 4 blocks, tests, decision bench, CI, knowledge base
 - [ ] [A] GitHub repository created, `main` protected, CI active {O2}
-- [ ] [All] `make setup`, `make check` and `make run` green on all 4 machines
-- [ ] [All] Review ADRs 0001 to 0006, at least one comment each, then move them to "accepted" {O2}
+- [ ] [All] `make setup`, `make check` and `make run` green on all 4 machines (Linux and macOS)
+- [ ] [All] Review ADRs 0001 to 0007, at least one comment each, then move them to "accepted" {O2}
 - [ ] [All] The reference use case written in one sentence, and the 8 actions listed with their floor
 - [ ] [A] Measure the naive approach (a generative LLM ranks the 8 actions): 30 calls, p50 and p95 {O1}
 - [ ] [A] Finalize [`hard-problem.md`](hard-problem.md) with quantified thresholds, send it to the mentor {O1}
 - [ ] [All] Finalize [`evidence/research-setup.md`](evidence/research-setup.md): sources, tools in place, cadence, split of work {O1}
 - [ ] [All] A first tech watch entry each in `evidence/research-log.md` {O1}
-- [ ] [C] Test the Accessibility permission from a Python sidecar launched by Tauri (risk #1 of the architecture)
+- [ ] [C] Test screen reading on Linux (AT-SPI, X11 session) and check what still works under Wayland (risk #1, ADR 0007)
+- [ ] [A] Test the macOS Accessibility permission from a Python sidecar launched by Tauri (risk #1 of the architecture)
 
 **End demo**: `make check` and `make run` pass for everyone; the mentor has received the hard-problem note.
 
@@ -48,13 +49,15 @@ Goal: everyone can develop their block alone, against the others' mocks.
 
 ## v0.2 · Real vertical slice (November 16 → December 20)
 
-Goal: on the reference Mac, hotkey, menu, action executed, for real.
+Goal: on Linux and on macOS, hotkey, menu, action executed, for real.
 
-- [ ] [C] Real `observe()` on macOS: application, window, selection
-- [ ] [C] The 8 actions with their floor; real `execute()` for at least 3, including one `EXTERNAL`
+- [ ] [C] Real `observe()` on Linux (AT-SPI): application, window, selection
+- [ ] [A] [C] Real `observe()` on macOS (Accessibility API), on the team's Mac
+- [ ] [C] The 8 actions with their floor; real `execute()` for at least 3, including one `EXTERNAL`, on both systems
 - [ ] [B] Real context: device and short-term fragments, labeled, trimmed to budget, no network
 - [ ] [A] A System 1 backend (Jev or Laya) behind `DecisionPort`, alongside the rules
 - [ ] [A] `generate()` (LLM) wired up for an action that writes
+- [ ] [A] CI also runs on macOS, for the macOS backend
 - [ ] [D] Tauri shell: global hotkey, pie menu (fixed positions + contextual slots), approval window
 - [ ] [D] IPC bridge (local WebSocket, token, Origin) and TypeScript types generated from the contracts
 - [ ] [A] Architecture diagram and data diagram up to date in `architecture.md` · **end of November** {O2}
@@ -64,7 +67,7 @@ Goal: on the reference Mac, hotkey, menu, action executed, for real.
 - [ ] [A] [D] PERF choice note: axis, indicators, target · **end of December** {PERF}
 - [ ] [A] Note on the 2 or 3 topics to have challenged by experts · **end of December** {EXP}
 
-**End demo**: the slice runs on the reference Mac.
+**End demo**: the slice runs on a Linux machine and on the Mac.
 **Go / no-go**: on 20 real situations, is the intended action in the top 3 at least 7 times out of 10? If not, we rethink the approach before going further.
 
 ## v0.3 · Measured decision (January → February)

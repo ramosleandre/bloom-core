@@ -9,7 +9,7 @@
 |---|---|---|
 | System 1 decision models, evaluation, calibration | A | it is the hard problem |
 | Agent memory and context (mem0, Letta…) | B | their block, and the research direction |
-| macOS automation, agent security (injection), MCP | C | their block, and the risks |
+| Desktop automation (Linux and macOS), agent security (injection), MCP | C | their block, and the risks |
 | Radial menu UX, Tauri, perceived latency | D | their block, and the PERF axis |
 
 ## Sources
@@ -23,7 +23,8 @@
 | arXiv alerts (decision model, calibration, agent memory, prompt injection) | papers | A, B, C | published methods | dated state of the art |
 | mem0 and Letta repositories (releases) | repositories | B | state of the art in agent memory | comparing ourselves to existing work |
 | OWASP Top 10 for LLM Applications | security reference | C | catalog of attacks, including injection | checklist for the adversarial set |
-| Apple Accessibility documentation + pyobjc | official docs | C | reading the screen across applications | the architecture's #1 risk |
+| Apple Accessibility documentation + pyobjc | official docs | C | reading the screen across applications on macOS | the architecture's #1 risk |
+| AT-SPI documentation and Wayland portals | official docs | C | reading the screen and global hotkeys on Linux | the architecture's #1 risk on Linux |
 | MCP specification (releases) | spec | C | V2 connectors | not reinventing connectors |
 | Tauri (releases, documentation) | official docs | D | the desktop shell | direct dependency |
 | HCI literature on pie menus and marking menus | papers | D | what makes a radial menu effective | well-argued UX decisions |
