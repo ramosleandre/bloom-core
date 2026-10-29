@@ -43,6 +43,7 @@ Checked by `make check` where possible.
 5. Changing `src/bloom/core/contracts.py`: PR with the `contract` label, reviewed by the owners of the affected blocks.
 6. No secrets in the repo (local `.env`, see `.env.example`). No real personal data committed.
 7. Everything is written in English: code, comments, docs, commit messages.
+8. Never commit or push directly to `main`, docs included: always a branch, then a PR.
 
 ## Keep it simple
 
