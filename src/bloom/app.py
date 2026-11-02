@@ -30,7 +30,7 @@ def build_ranker() -> DecisionRanker:
     return DecisionRanker([BACKENDS[n]() for n in names if n])
 
 
-async def demo() -> RunState:
+async def demo(budget_tokens: int = 4000) -> RunState:
     return await handle_trigger(
         Trigger(kind="hotkey", at=datetime.now(UTC)),
         surface=MockSurface(),
@@ -38,12 +38,15 @@ async def demo() -> RunState:
         ranker=build_ranker(),
         interface=MockInterface(),
         audit=JsonlAudit(audit_path()),
+        budget_tokens=budget_tokens,
     )
 
 
 def main() -> None:
-    run = asyncio.run(demo())
+    budget_tokens = int(os.environ.get("BLOOM_CONTEXT_BUDGET_TOKENS", "4000"))
+    run = asyncio.run(demo(budget_tokens))
     print("Bloom: demo run (blocks B, C and D mocked, rule-based decision)")
+    print(f"  context     budget {budget_tokens} tokens")
     if run.plan:
         menu = " | ".join(f"{c.label} {c.prob:.2f}" for c in run.plan.candidates)
         print(f"  menu        {menu}   (decided by {run.plan.decided_by})")

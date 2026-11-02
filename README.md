@@ -25,6 +25,7 @@ Copy `.env.example` to `.env`. No variable is required to get started.
 | Variable | Role | Default |
 |---|---|---|
 | `BLOOM_DECISION_BACKENDS` | decision backends, in order of preference | `rules` |
+| `BLOOM_CONTEXT_BUDGET_TOKENS` | context budget for the demo run | `4000` |
 | `BLOOM_AUDIT_PATH` | local run log (personal data, never committed) | `.bloom/audit.jsonl` |
 | `JEV_API_KEY`, `LLM_API_KEY` | hosted model keys (from v0.2) | empty |
 
