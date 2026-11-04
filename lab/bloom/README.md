@@ -8,7 +8,7 @@ This is what will make the diagnosis required by PERF ("where is the bottleneck?
 
 ## Protocol (to complete before the first official measurement)
 
-- **Machine**: the reference Mac (`lab/README.md`)
+- **Machine**: the reference machine (`lab/README.md`)
 - **Scenario**: <the situations played, for example 10 situations × 10 repetitions>
 - **Repetitions**: 100 runs; the first 5 excluded (warm-up)
 - **Decision backend**: <name and version>

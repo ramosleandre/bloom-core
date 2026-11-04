@@ -6,7 +6,7 @@
 
 ```mermaid
 flowchart TB
-    U(["User on their Mac"])
+    U(["User on their computer"])
     subgraph SHELL["Process 1 · Tauri shell"]
         D["D · Interface<br/>hotkey · pie menu · approval"]
     end
@@ -16,7 +16,7 @@ flowchart TB
         B["B · Context & memory"]
         C["C · Surface & actions"]
     end
-    MAC[("macOS and its apps")]
+    MAC[("Linux or macOS and its apps")]
     MOD[("Models<br/>Jev · Laya/Von · LLM")]
     STO[("Local: JSONL audit · SQLite")]
 
@@ -141,7 +141,8 @@ No user data leaves the machine, except to a decision backend that the policy al
 | the remote decision backend does not respond | no ranking | fallback to the next allowed backend (local, then rules); `decided_by` records it | ✅ ranker |
 | no backend can respond | no ranking | run fails cleanly and is audited; eventually, a menu with only the fixed actions | 🟨 degraded menu still to do |
 | the Python daemon crashes | the shell stops responding | the shell displays "Bloom unavailable" and restarts the daemon | ⬜ v0.2 |
-| the Accessibility permission is revoked | empty observation | degraded menu + prompt to re-enable it | ⬜ v0.2 |
+| screen access is lost (Accessibility permission revoked on macOS, AT-SPI disabled on Linux) | empty observation | degraded menu + prompt to re-enable it | ⬜ v0.2 |
+| the Linux session runs Wayland | global hotkey or overlay unavailable | clear message at startup: V1 needs an X11 session (ADR 0007) | ⬜ v0.2 |
 | the generative LLM is slow or unavailable | writing action impossible | clear error, nothing is executed | ⬜ v0.2 |
 | the approval gets no answer | run pending | cancelled on expiry (2 min): never executed by default | ⬜ v0.4 |
 | third-party content contains an injection | the model proposes a dangerous action | floor + `UNTRUSTED` gate: approval required | ✅ policy |
@@ -150,4 +151,4 @@ No user data leaves the machine, except to a decision backend that the policy al
 
 ## 8. Structural choices
 
-Each choice, with the rejected alternative and the reason, is in [`adr/`](adr/): new repository (0001), model-agnostic decision port (0002), core and 4 blocks in a star (0003), Python daemon and Tauri shell (0004), quality tooling (0005), no workflow engine in V1 (0006).
+Each choice, with the rejected alternative and the reason, is in [`adr/`](adr/): new repository (0001), model-agnostic decision port (0002), core and 4 blocks in a star (0003), Python daemon and Tauri shell (0004), quality tooling (0005), no workflow engine in V1 (0006), Linux and macOS (0007).

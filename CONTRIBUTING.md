@@ -4,7 +4,7 @@ Everything in this repository is written in English: code, comments, docs, commi
 
 ## Branches
 
-- `main` is protected: changes land only through a PR, with green CI and a review.
+- Nothing is committed or pushed directly to `main`, docs included: every change lands through a PR, with green CI and a review.
 - One branch per topic, named `<scope>/<topic>`: `decision/laya-adapter`, `surface/observe-mac`.
 
 ## Commits

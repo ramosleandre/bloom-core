@@ -10,7 +10,7 @@
 
 | Indicator | Formula | Tool | Conditions |
 |---|---|---|---|
-| `menu_latency` (main) | menu display time minus hotkey press time; p50 and p95 | `RunState.timings_ms` in the audit, script in `lab/bloom/` | reference Mac, 100 runs with the first 5 (warm-up) excluded, fixed scenario |
+| `menu_latency` (main) | menu display time minus hotkey press time; p50 and p95 | `RunState.timings_ms` in the audit, script in `lab/bloom/` | reference machine, 100 runs with the first 5 (warm-up) excluded, fixed scenario |
 | `decision_latency` | duration of one call to `Ranker.rank()`; p50 and p95 per backend | `make bench` | same set, 1 warm-up call |
 | `top3` (safeguard) | share of situations where an expected action is in the top 3 | `make bench` | frozen set of at least 50 situations |
 

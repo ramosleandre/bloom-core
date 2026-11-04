@@ -1,12 +1,12 @@
 # Bloom
 
-One hotkey, a pie menu, the right action. Bloom looks at what you are doing on macOS, suggests the three most useful actions and runs them, asking for your approval when it is risky.
+One hotkey, a pie menu, the right action. Bloom looks at what you are doing on Linux or macOS, suggests the three most useful actions and runs them, asking for your approval when it is risky.
 
 Epitech EIP project (Technical Track, 2026-27). Status: **v0.0, foundation**. The core runs; the blocks are still mocked. Detailed progress: [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Requirements
 
-- macOS for the full product. Linux or macOS is enough for the core, the tests and the measurement bench.
+- Linux or macOS ([ADR 0007](docs/adr/0007-linux-and-macos.md)). On Linux, V1 targets an X11 session.
 - [uv](https://docs.astral.sh/uv/): it also installs the right Python version (3.13).
 - `make`
 

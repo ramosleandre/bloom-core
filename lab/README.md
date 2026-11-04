@@ -33,9 +33,9 @@ The bench always prints a **random** line: the score of a random ranking on the 
 |---|---|---|---|
 | `top1`, `top3` | share of situations where an expected action is ranked 1st, or in the top 3 | `make bench` | annotated set, same available actions |
 | `decision_latency` | duration of a call to `Ranker.rank()`, p50 and p95 | `make bench` | after 1 unmeasured warm-up call |
-| `menu_latency` | menu display time minus hotkey press time, p50 and p95 | `RunState.timings_ms` in the audit | reference Mac, protocol in `bloom/README.md` |
+| `menu_latency` | menu display time minus hotkey press time, p50 and p95 | `RunState.timings_ms` in the audit | reference machine, protocol in `bloom/README.md` |
 | `personalization_lift` | `top1` with memory minus `top1` without memory | `make bench` (v1.0) | situations with user history |
 
-## Reference Mac
+## Reference machine
 
-To fill in once: model, chip, RAM, macOS version, plugged into AC power, applications open during measurements.
+A single machine for every PERF measurement, so that they stay comparable (ADR 0007). To fill in once: system and version, model, processor, RAM, plugged into AC power, applications open during measurements.
