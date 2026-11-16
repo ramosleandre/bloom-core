@@ -1,0 +1,159 @@
+{
+ "steps": [
+  {
+   "id": 0,
+   "activated": "Spike Fixture Window",
+   "overview": true,
+   "cmd": "prep",
+   "roundtrip_ms": 19.4
+  },
+  {
+   "id": 1,
+   "title": "Spike Fixture Window",
+   "wm_class": "zenity",
+   "pid": 166591,
+   "gtk_app_id": null,
+   "sandboxed_app_id": null,
+   "pointer": [
+    0,
+    0
+   ],
+   "windows": 1,
+   "us": 318,
+   "cmd": "focus",
+   "roundtrip_ms": 1.17
+  },
+  {
+   "id": 2,
+   "text": null,
+   "us": 175,
+   "cmd": "primary",
+   "roundtrip_ms": 0.8
+  },
+  {
+   "id": 3,
+   "sent": 6,
+   "cmd": "keys",
+   "roundtrip_ms": 1.63
+  },
+  {
+   "id": 4,
+   "primary": [],
+   "clipboard": [],
+   "cmd": "mimes",
+   "roundtrip_ms": 1.25
+  },
+  {
+   "id": 5,
+   "text": null,
+   "us": 80,
+   "cmd": "primary",
+   "roundtrip_ms": 0.63
+  },
+  {
+   "id": 6,
+   "text": null,
+   "us": 43,
+   "cmd": "primary",
+   "roundtrip_ms": 0.43
+  },
+  {
+   "id": 7,
+   "text": null,
+   "us": 58,
+   "cmd": "primary",
+   "roundtrip_ms": 0.46
+  },
+  {
+   "id": 8,
+   "text": null,
+   "us": 102,
+   "cmd": "primary",
+   "roundtrip_ms": 0.43
+  },
+  {
+   "id": 9,
+   "text": null,
+   "us": 12,
+   "cmd": "primary",
+   "roundtrip_ms": 0.17
+  },
+  {
+   "id": 10,
+   "text": null,
+   "us": 26,
+   "cmd": "primary",
+   "roundtrip_ms": 0.17
+  },
+  {
+   "id": 11,
+   "text": null,
+   "us": 11,
+   "cmd": "primary",
+   "roundtrip_ms": 0.12
+  },
+  {
+   "id": 12,
+   "text": null,
+   "us": 10,
+   "cmd": "primary",
+   "roundtrip_ms": 0.1
+  },
+  {
+   "id": 13,
+   "text": null,
+   "us": 10,
+   "cmd": "primary",
+   "roundtrip_ms": 0.09
+  },
+  {
+   "id": 14,
+   "text": null,
+   "us": 19,
+   "cmd": "primary",
+   "roundtrip_ms": 0.11
+  },
+  {
+   "id": 15,
+   "sent": 4,
+   "cmd": "keys",
+   "roundtrip_ms": 0.18
+  },
+  {
+   "id": 16,
+   "primary": [],
+   "clipboard": [
+    "text/plain",
+    "text/plain;charset=utf-8"
+   ],
+   "cmd": "mimes",
+   "roundtrip_ms": 0.85
+  },
+  {
+   "id": 17,
+   "text": "select me",
+   "us": 1091,
+   "cmd": "clipboard",
+   "roundtrip_ms": 1.59
+  },
+  {
+   "id": 18,
+   "pasted": true,
+   "us": 251477,
+   "cmd": "paste",
+   "roundtrip_ms": 252.36
+  },
+  {
+   "id": 19,
+   "text": "pasted-by-spike",
+   "us": 1689,
+   "cmd": "clipboard",
+   "roundtrip_ms": 2.94
+  }
+ ],
+ "hello": {
+  "hello": "spike",
+  "shell": "50.6"
+ },
+ "reconnect_s": 0.3
+}

@@ -1,0 +1,1 @@
+{ "uuid": "sense-spike@bloom.local", "name": "Sense spike", "description": "Throwaway spike: connects out to a local socket; reads focus, pointer, PRIMARY and CLIPBOARD on request.", "shell-version": ["46","47","48","49","50"] }
