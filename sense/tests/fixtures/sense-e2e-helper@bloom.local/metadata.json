@@ -1,0 +1,7 @@
+{
+  "uuid": "sense-e2e-helper@bloom.local",
+  "name": "Sense end-to-end test helper",
+  "description": "Test only. Leaves the overview and focuses each new window, so a headless Shell has a focused window. Never installed for users.",
+  "shell-version": ["46", "47", "48", "49", "50"],
+  "version": 1
+}

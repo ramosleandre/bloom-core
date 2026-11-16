@@ -1,0 +1,7 @@
+{
+  "uuid": "sense@bloom.local",
+  "name": "Sense",
+  "description": "Tells the local Sense service which application and window are in front, and, when the user asks an assistant for context, the window title, the pointer position and the kinds of data on the clipboard (never its content). It connects to a local socket owned by the user; it exposes no D-Bus service, binds no shortcut and sends nothing over the network.",
+  "shell-version": ["46", "47", "48", "49", "50"],
+  "version": 1
+}
