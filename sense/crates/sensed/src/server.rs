@@ -48,6 +48,21 @@ impl Source for Remote {
 struct Shared {
     engine: Engine,
     remotes: BTreeMap<String, Remote>,
+    /// In-process platform sources, connected lazily (their service may start after the daemon).
+    local: Vec<Arc<dyn Source + Sync>>,
+}
+
+/// Connect the in-process sources that are not connected yet. Cheap when there is nothing to do.
+fn connect_local(shared: &mut Shared) {
+    #[cfg(target_os = "linux")]
+    if !shared.local.iter().any(|s| s.hello().id == "linux.atspi") {
+        if let Some(atspi) = sense_platform_linux::atspi::Atspi::connect() {
+            shared.engine.register_source(atspi.hello());
+            shared.local.push(Arc::new(atspi));
+        }
+    }
+    #[cfg(not(target_os = "linux"))]
+    let _ = shared;
 }
 
 fn send_line(writer: &Arc<Mutex<UnixStream>>, value: &Value) -> bool {
@@ -147,7 +162,9 @@ pub fn run() -> ExitCode {
     let shared = Arc::new(Mutex::new(Shared {
         engine: Engine::new(cfg, linux_session()),
         remotes: BTreeMap::new(),
+        local: Vec::new(),
     }));
+    connect_local(&mut shared.lock().unwrap());
 
     for stream in listener.incoming().flatten() {
         let shared = shared.clone();
@@ -303,8 +320,12 @@ fn reader_loop(
                     req.deadline = Duration::from_millis(d.min(5_000));
                 }
                 let mut s = shared.lock().unwrap();
+                connect_local(&mut s);
                 let remotes: Vec<Remote> = s.remotes.values().cloned().collect();
-                let sources: Vec<&dyn Source> = remotes.iter().map(|r| r as &dyn Source).collect();
+                let local = s.local.clone();
+                // Extensions first (the compositor knows the window), then in-process sources.
+                let mut sources: Vec<&dyn Source> = remotes.iter().map(|r| r as &dyn Source).collect();
+                sources.extend(local.iter().map(|l| l.as_ref() as &dyn Source));
                 let snap = s.engine.capture(&req, &sources);
                 if params.get("format").and_then(Value::as_str) == Some("card") {
                     Ok(json!({ "card": card::render(&snap) }))

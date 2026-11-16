@@ -22,11 +22,12 @@ because the indicator the specification requires is not written yet.
 | `sense-core` | Privacy filter (levels, sanitizing, secret redaction), reducer with precedence, focus tracking that ignores a client's own windows, exclusions, capture with a deadline, access ledger, the `card` rendering. No OS code |
 | `sensed` | User-only Unix socket; client API (`capabilities.get`, `capture`, `privacy.*`, `access.log`, `timeline.query`); source protocol for extensions |
 | `sense` (CLI) | `caps`, `capture [--card]`, `level`, `log`, `timeline` |
+| `sense-platform-linux` | The `linux.atspi` source: focused element and exact selection over the accessibility bus, tracking focus through events, never reading password fields. Builds, connects and takes part in captures; **not yet proven end to end** (open question S8) |
 | `ext/gnome-shell` | The `linux.gnome` source: application, window, title on request, pointer, clipboard kinds. Connects out; exports nothing |
 | Tests | 31 unit and scenario tests without a desktop; an end-to-end test in an isolated headless GNOME Shell |
 
 Not written yet: scopes, tokens and peer-credential checks; the indicator; per-application
-approval; deep content reads; the acting service; every source other than `linux.gnome`;
+approval; deep content reads; the acting service; every source other than `linux.gnome` and `linux.atspi`;
 Windows transport. The optional state subtrees (browser, editor, terminal, media, calendar) are
 not in the schema yet.
 

@@ -1,6 +1,12 @@
 [workspace]
-resolver = "2"
-members = ["crates/sense-schema", "crates/sense-core", "crates/sensed", "crates/sense-cli"]
+resolver = "3"
+members = [
+    "crates/sense-schema",
+    "crates/sense-core",
+    "crates/sense-platform-linux",
+    "crates/sensed",
+    "crates/sense-cli",
+]
 
 [workspace.package]
 version = "0.0.1"

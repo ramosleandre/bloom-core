@@ -11,5 +11,8 @@ sense-schema = { path = "../sense-schema" }
 sense-core = { path = "../sense-core" }
 serde_json.workspace = true
 
+[target.'cfg(target_os = "linux")'.dependencies]
+sense-platform-linux = { path = "../sense-platform-linux" }
+
 [lints]
 workspace = true
