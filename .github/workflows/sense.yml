@@ -1,0 +1,36 @@
+# Checks for the Sense context engine (sense/). Separate from ci.yml on purpose: it only runs when
+# sense/ changes, and the Python `check` job stays the one required to merge.
+name: sense
+
+on:
+  pull_request:
+    paths: ["sense/**", ".github/workflows/sense.yml"]
+  push:
+    branches: [main]
+    paths: ["sense/**", ".github/workflows/sense.yml"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.86.0
+        with:
+          components: clippy, rustfmt
+          targets: aarch64-apple-darwin, x86_64-pc-windows-msvc
+      - run: make -C sense check
+
+  # The real extension, daemon and CLI against a headless GNOME Shell. Informative for now:
+  # it has only been run on GNOME Shell 50; this job tries the runner's version.
+  gnome-e2e:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.86.0
+      - name: Install GNOME Shell and the fixture tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnome-shell zenity dbus-daemon
+      - run: gnome-shell --version
+      - run: make -C sense e2e
