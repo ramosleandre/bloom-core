@@ -1,6 +1,7 @@
 # Sense: the context engine
 
-> Status: **proposed design**, not yet accepted by the team (ADRs 0012 to 0018). No code exists yet.
+> Status: **proposed design**, not yet accepted by the team (ADRs 0012 to 0018). A first
+> slice is implemented to back the proposal with running code: see "What exists" below.
 > "Sense" is a working name.
 
 Sense is a local service that knows what the user is doing on their computer. It gathers every piece
@@ -9,6 +10,32 @@ serves it to clients through one API. Bloom is its first client.
 
 It exists as a separate component because the problem is separate: reading context is the same
 problem whatever is done with it afterwards, and it is where all the per-OS code lives.
+
+## What exists
+
+A development slice, not a product. `sensed` refuses to start without `--dev-no-indicator`,
+because the indicator the specification requires is not written yet.
+
+| Piece | State |
+|---|---|
+| `sense-schema` | Types for the minimum slice, JSON Schema emitted to `schema/` with a drift test |
+| `sense-core` | Privacy filter (levels, sanitizing, secret redaction), reducer with precedence, focus tracking that ignores a client's own windows, exclusions, capture with a deadline, access ledger, the `card` rendering. No OS code |
+| `sensed` | User-only Unix socket; client API (`capabilities.get`, `capture`, `privacy.*`, `access.log`, `timeline.query`); source protocol for extensions |
+| `sense` (CLI) | `caps`, `capture [--card]`, `level`, `log`, `timeline` |
+| `ext/gnome-shell` | The `linux.gnome` source: application, window, title on request, pointer, clipboard kinds. Connects out; exports nothing |
+| Tests | 31 unit and scenario tests without a desktop; an end-to-end test in an isolated headless GNOME Shell |
+
+Not written yet: scopes, tokens and peer-credential checks; the indicator; per-application
+approval; deep content reads; the acting service; every source other than `linux.gnome`;
+Windows transport. The optional state subtrees (browser, editor, terminal, media, calendar) are
+not in the schema yet.
+
+```
+make -C sense check     # format, lints, tests, macOS and Windows type-check
+make -C sense e2e       # the real extension, daemon and CLI against a headless GNOME Shell
+```
+
+Minimum Rust version: 1.86, the version the Tauri shell pins.
 
 ## Reading order
 

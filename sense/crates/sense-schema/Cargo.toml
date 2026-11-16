@@ -1,0 +1,16 @@
+[package]
+name = "sense-schema"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "Data model of the Sense context engine. No logic, no OS code."
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+
+[lints]
+workspace = true

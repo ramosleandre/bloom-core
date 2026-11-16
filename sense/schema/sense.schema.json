@@ -1,0 +1,1614 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SchemaRoot",
+  "description": "Everything the schema file must describe, in one root, for JSON Schema emission.",
+  "type": "object",
+  "required": [
+    "access_entry",
+    "capabilities",
+    "observation",
+    "snapshot",
+    "source_hello"
+  ],
+  "properties": {
+    "access_entry": {
+      "$ref": "#/definitions/AccessEntry"
+    },
+    "capabilities": {
+      "$ref": "#/definitions/Capabilities"
+    },
+    "observation": {
+      "$ref": "#/definitions/Observation"
+    },
+    "snapshot": {
+      "$ref": "#/definitions/Snapshot"
+    },
+    "source_hello": {
+      "$ref": "#/definitions/SourceHello"
+    }
+  },
+  "definitions": {
+    "AccessEntry": {
+      "description": "One read by a client. Never titles, URLs or content.",
+      "type": "object",
+      "required": [
+        "at",
+        "bytes",
+        "client",
+        "excluded",
+        "kinds",
+        "method",
+        "redacted"
+      ],
+      "properties": {
+        "app": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "at": {
+          "type": "string"
+        },
+        "bytes": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "client": {
+          "type": "string"
+        },
+        "excluded": {
+          "type": "boolean"
+        },
+        "kinds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "method": {
+          "type": "string"
+        },
+        "redacted": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Activity": {
+      "type": "object",
+      "required": [
+        "idle_ms",
+        "locked"
+      ],
+      "properties": {
+        "idle_ms": {
+          "$ref": "#/definitions/Field_for_uint64"
+        },
+        "locked": {
+          "$ref": "#/definitions/Field_for_Boolean"
+        }
+      }
+    },
+    "App": {
+      "type": "object",
+      "required": [
+        "category",
+        "id",
+        "name",
+        "pid",
+        "raw_id",
+        "via"
+      ],
+      "properties": {
+        "canonical": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "excluded": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ExcludedBy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pid": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "raw_id": {
+          "type": "string"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Capabilities": {
+      "type": "object",
+      "required": [
+        "level",
+        "signals",
+        "sources"
+      ],
+      "properties": {
+        "level": {
+          "$ref": "#/definitions/Level"
+        },
+        "signals": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/SignalStatus"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SourceStatus"
+          }
+        }
+      }
+    },
+    "Category": {
+      "type": "string",
+      "enum": [
+        "browser",
+        "mail",
+        "chat",
+        "editor",
+        "terminal",
+        "office",
+        "notes",
+        "files",
+        "media",
+        "meeting",
+        "password_manager",
+        "system",
+        "other"
+      ]
+    },
+    "Channel": {
+      "type": "string",
+      "enum": [
+        "compositor",
+        "window_system",
+        "accessibility",
+        "app_extension",
+        "app_scripting",
+        "primary_selection",
+        "copy",
+        "clipboard",
+        "process_inspection",
+        "pixels",
+        "system_service"
+      ]
+    },
+    "ClipKind": {
+      "type": "string",
+      "enum": [
+        "text",
+        "html",
+        "image",
+        "files",
+        "other"
+      ]
+    },
+    "Clipboard": {
+      "type": "object",
+      "required": [
+        "concealed",
+        "kinds",
+        "size",
+        "text"
+      ],
+      "properties": {
+        "changed_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "concealed": {
+          "type": "boolean"
+        },
+        "kinds": {
+          "$ref": "#/definitions/Field_for_Array_of_ClipKind"
+        },
+        "size": {
+          "$ref": "#/definitions/Field_for_uint64"
+        },
+        "text": {
+          "$ref": "#/definitions/Field_for_String"
+        }
+      }
+    },
+    "Document": {
+      "type": "object",
+      "required": [
+        "path",
+        "title",
+        "url"
+      ],
+      "properties": {
+        "excluded": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ExcludedBy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "path": {
+          "$ref": "#/definitions/Field_for_String"
+        },
+        "title": {
+          "$ref": "#/definitions/Field_for_String"
+        },
+        "url": {
+          "$ref": "#/definitions/Field_for_String"
+        }
+      }
+    },
+    "Element": {
+      "type": "object",
+      "required": [
+        "editable",
+        "multiline",
+        "raw_role",
+        "role",
+        "secure"
+      ],
+      "properties": {
+        "caret": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "editable": {
+          "type": "boolean"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "multiline": {
+          "type": "boolean"
+        },
+        "raw_role": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/definitions/Role"
+        },
+        "secure": {
+          "type": "boolean"
+        },
+        "value_len": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "uint32",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Event": {
+      "description": "Events carry metadata only: never titles, paths, URLs or text.",
+      "type": "object",
+      "required": [
+        "at",
+        "data",
+        "kind",
+        "seq",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "data": true,
+        "kind": {
+          "type": "string"
+        },
+        "seq": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "subject": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "ExcludedBy": {
+      "type": "string",
+      "enum": [
+        "user",
+        "app_profile",
+        "capture_protected",
+        "private_window",
+        "provider_hint"
+      ]
+    },
+    "Field_for_Array_of_ClipKind": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_Array_of_ClipKind"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_Array_of_Event": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_Array_of_Event"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_Boolean": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_Boolean"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_Element": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_Element"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_Pointer": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_Pointer"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_String": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_String"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_uint32": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_uint32"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "Field_for_uint64": {
+      "description": "A leaf that comes from outside the engine: a value with its envelope, or the reason it is not available. \"Nothing there\" and \"could not tell\" are different things.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Observed_for_uint64"
+        },
+        {
+          "type": "object",
+          "required": [
+            "unavailable"
+          ],
+          "properties": {
+            "unavailable": {
+              "$ref": "#/definitions/Reason"
+            }
+          }
+        }
+      ]
+    },
+    "FocusView": {
+      "type": "object",
+      "required": [
+        "element"
+      ],
+      "properties": {
+        "app": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/App"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "element": {
+          "$ref": "#/definitions/Field_for_Element"
+        },
+        "since": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "window": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Window"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "Level": {
+      "description": "What the user has allowed. See `spec/00-overview.md`, \"Observation levels\".",
+      "type": "string",
+      "enum": [
+        "paused",
+        "on_request",
+        "session_awareness"
+      ]
+    },
+    "Observation": {
+      "type": "object",
+      "required": [
+        "at",
+        "channel",
+        "on_request",
+        "patch",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "on_request": {
+          "description": "True when this observation answers a read made for a user-initiated capture. Set by the engine, never trusted from the wire.",
+          "writeOnly": true,
+          "type": "boolean"
+        },
+        "patch": {
+          "$ref": "#/definitions/Patch"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_Array_of_ClipKind": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClipKind"
+          }
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_Array_of_Event": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_Boolean": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "boolean"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_Element": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/definitions/Element"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_Pointer": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "$ref": "#/definitions/Pointer"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_String": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "string"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_uint32": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "integer",
+          "format": "uint32",
+          "minimum": 0.0
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Observed_for_uint64": {
+      "type": "object",
+      "required": [
+        "at",
+        "quality",
+        "sensitivity",
+        "value",
+        "via"
+      ],
+      "properties": {
+        "at": {
+          "type": "string"
+        },
+        "quality": {
+          "$ref": "#/definitions/Quality"
+        },
+        "redacted": {
+          "type": "boolean"
+        },
+        "sensitivity": {
+          "$ref": "#/definitions/Sensitivity"
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    },
+    "Os": {
+      "type": "string",
+      "enum": [
+        "macos",
+        "windows",
+        "linux"
+      ]
+    },
+    "Patch": {
+      "description": "A fact reported by a source, in OS terms. Sources do not interpret, rank or normalize.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "name",
+            "pid",
+            "raw_id",
+            "type"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "pid": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "raw_id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "app_seen"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "pid",
+            "type"
+          ],
+          "properties": {
+            "pid": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "app_gone"
+              ]
+            }
+          }
+        },
+        {
+          "description": "`key` identifies the window for this source only; the engine assigns the public id.",
+          "type": "object",
+          "required": [
+            "key",
+            "pid",
+            "type"
+          ],
+          "properties": {
+            "capture_protected": {
+              "description": "The application refuses screen capture for this window.",
+              "default": false,
+              "type": "boolean"
+            },
+            "fullscreen": {
+              "default": false,
+              "type": "boolean"
+            },
+            "key": {
+              "type": "string"
+            },
+            "pid": {
+              "type": "integer",
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "private": {
+              "default": false,
+              "type": "boolean"
+            },
+            "title": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "window_seen"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "key",
+            "type"
+          ],
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "window_gone"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "key": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "focus_changed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "raw_role",
+            "role",
+            "type"
+          ],
+          "properties": {
+            "caret": {
+              "default": null,
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "editable": {
+              "default": false,
+              "type": "boolean"
+            },
+            "label": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "multiline": {
+              "default": false,
+              "type": "boolean"
+            },
+            "raw_role": {
+              "type": "string"
+            },
+            "role": {
+              "$ref": "#/definitions/Role"
+            },
+            "secure": {
+              "default": false,
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "element"
+              ]
+            },
+            "value_len": {
+              "default": null,
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint32",
+              "minimum": 0.0
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "quality",
+            "type"
+          ],
+          "properties": {
+            "len": {
+              "default": null,
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint32",
+              "minimum": 0.0
+            },
+            "quality": {
+              "$ref": "#/definitions/Quality"
+            },
+            "text": {
+              "description": "`Some(\"\")` means \"nothing is selected\". `None` means the source knows only the length.",
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "selection"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "kinds",
+            "size",
+            "type"
+          ],
+          "properties": {
+            "concealed": {
+              "default": false,
+              "type": "boolean"
+            },
+            "kinds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClipKind"
+              }
+            },
+            "size": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "text": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "clipboard"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "no_context": {
+              "description": "Provider hint: the page or application asked not to be read.",
+              "default": false,
+              "type": "boolean"
+            },
+            "path": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "title": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "document"
+              ]
+            },
+            "url": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "pointer"
+              ]
+            },
+            "x": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "y": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "idle_ms": {
+              "default": null,
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "locked": {
+              "default": null,
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "activity"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Pointer": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Quality": {
+      "type": "string",
+      "enum": [
+        "exact",
+        "ambient",
+        "inferred"
+      ]
+    },
+    "Reason": {
+      "type": "string",
+      "enum": [
+        "no_source",
+        "permission_denied",
+        "not_requested",
+        "app_not_accessible",
+        "excluded",
+        "timeout",
+        "not_applicable",
+        "level",
+        "approval_denied"
+      ]
+    },
+    "Role": {
+      "type": "string",
+      "enum": [
+        "window",
+        "dialog",
+        "document",
+        "web_area",
+        "text_field",
+        "text_area",
+        "secure_text_field",
+        "button",
+        "link",
+        "checkbox",
+        "radio",
+        "combo_box",
+        "menu",
+        "menu_item",
+        "tab",
+        "list",
+        "list_item",
+        "table",
+        "row",
+        "cell",
+        "heading",
+        "paragraph",
+        "image",
+        "toolbar",
+        "terminal",
+        "canvas",
+        "group",
+        "unknown"
+      ]
+    },
+    "Selection": {
+      "type": "object",
+      "required": [
+        "len",
+        "text"
+      ],
+      "properties": {
+        "len": {
+          "$ref": "#/definitions/Field_for_uint32"
+        },
+        "owner_window": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "$ref": "#/definitions/Field_for_String"
+        }
+      }
+    },
+    "Sensitivity": {
+      "type": "string",
+      "enum": [
+        "system",
+        "personal",
+        "content"
+      ]
+    },
+    "Session": {
+      "type": "object",
+      "required": [
+        "display_server",
+        "os",
+        "os_version"
+      ],
+      "properties": {
+        "desktop": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "desktop_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "display_server": {
+          "type": "string"
+        },
+        "family": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "os": {
+          "$ref": "#/definitions/Os"
+        },
+        "os_version": {
+          "type": "string"
+        }
+      }
+    },
+    "SignalStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "via"
+          ],
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "available"
+              ]
+            },
+            "via": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "reason",
+            "status"
+          ],
+          "properties": {
+            "reason": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "unavailable"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Snapshot": {
+      "description": "What `capture` returns: a consistent cut of the state at one `seq`.",
+      "type": "object",
+      "required": [
+        "at",
+        "level",
+        "recent",
+        "seq",
+        "timings_ms"
+      ],
+      "properties": {
+        "activity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Activity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "at": {
+          "type": "string"
+        },
+        "clipboard": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Clipboard"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "document": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Document"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "focus": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/FocusView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "level": {
+          "$ref": "#/definitions/Level"
+        },
+        "pointer": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Field_for_Pointer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recent": {
+          "$ref": "#/definitions/Field_for_Array_of_Event"
+        },
+        "selection": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Selection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "seq": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0.0
+        },
+        "session": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Session"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timings_ms": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "uint32",
+            "minimum": 0.0
+          }
+        }
+      }
+    },
+    "SourceHello": {
+      "description": "First message of a source connection.",
+      "type": "object",
+      "required": [
+        "channel",
+        "id",
+        "provides",
+        "version"
+      ],
+      "properties": {
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "id": {
+          "type": "string"
+        },
+        "provides": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "SourceStatus": {
+      "type": "object",
+      "required": [
+        "channel",
+        "id",
+        "state"
+      ],
+      "properties": {
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "id": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      }
+    },
+    "Window": {
+      "type": "object",
+      "required": [
+        "app",
+        "fullscreen",
+        "id",
+        "private",
+        "title",
+        "via"
+      ],
+      "properties": {
+        "app": {
+          "type": "string"
+        },
+        "excluded": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ExcludedBy"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fullscreen": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "private": {
+          "type": "boolean"
+        },
+        "title": {
+          "$ref": "#/definitions/Field_for_String"
+        },
+        "via": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
