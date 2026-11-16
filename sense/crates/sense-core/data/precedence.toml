@@ -1,0 +1,29 @@
+# Which channel wins when two sources report the same field. First is best.
+# A channel that is not listed ranks last. See spec/01-data-model.md, "Precedence".
+
+[focus]
+order = ["compositor", "window_system", "accessibility"]
+
+[window_title]
+order = ["compositor", "window_system", "accessibility", "app_extension"]
+
+[element]
+order = ["app_extension", "accessibility"]
+
+[selection]
+order = ["app_extension", "accessibility", "copy", "primary_selection"]
+
+[document_url]
+order = ["app_extension", "app_scripting", "accessibility"]
+
+[document_path]
+order = ["app_extension", "accessibility", "process_inspection"]
+
+[document_title]
+order = ["app_extension", "app_scripting", "accessibility"]
+
+[clipboard]
+order = ["compositor", "window_system", "clipboard"]
+
+[pointer]
+order = ["compositor", "window_system"]

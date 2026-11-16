@@ -1,0 +1,50 @@
+# Knowledge about specific applications lives here and nowhere else.
+# `match` lists raw ids as each OS reports them (bundle id, executable, desktop id, WM_CLASS).
+# See spec/01-data-model.md, "app-profiles".
+
+[[app]]
+canonical = "firefox"
+category = "browser"
+match = ["org.mozilla.firefox", "firefox.exe", "org.mozilla.Firefox", "firefox", "Navigator.firefox"]
+
+[[app]]
+canonical = "chrome"
+category = "browser"
+match = ["com.google.Chrome", "chrome.exe", "google-chrome", "Google-chrome", "chromium", "org.chromium.Chromium"]
+
+[[app]]
+canonical = "vscode"
+category = "editor"
+match = ["com.microsoft.VSCode", "Code.exe", "code", "Code", "code-url-handler", "VSCodium", "Cursor"]
+
+[[app]]
+canonical = "gnome-terminal"
+category = "terminal"
+match = ["org.gnome.Ptyxis", "org.gnome.Terminal", "gnome-terminal-server", "com.apple.Terminal"]
+copy_shortcut = "ctrl+shift+c"
+paste_shortcut = "ctrl+shift+v"
+
+[[app]]
+canonical = "thunderbird"
+category = "mail"
+match = ["org.mozilla.Thunderbird", "thunderbird.exe", "thunderbird", "com.apple.mail"]
+
+[[app]]
+canonical = "nautilus"
+category = "files"
+match = ["org.gnome.Nautilus", "com.apple.finder", "explorer.exe"]
+
+[[app]]
+canonical = "1password"
+category = "password_manager"
+match = ["com.1password.1password", "1Password.exe", "1password", "1Password"]
+
+[[app]]
+canonical = "keepassxc"
+category = "password_manager"
+match = ["org.keepassxc.KeePassXC", "KeePassXC.exe", "keepassxc"]
+
+[[app]]
+canonical = "bitwarden"
+category = "password_manager"
+match = ["com.bitwarden.desktop", "Bitwarden.exe", "bitwarden", "Bitwarden"]
