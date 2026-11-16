@@ -1,0 +1,18 @@
+[package]
+name = "sensed"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+sense-schema = { path = "../sense-schema" }
+sense-core = { path = "../sense-core" }
+serde_json.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+sense-platform-linux = { path = "../sense-platform-linux" }
+
+[lints]
+workspace = true
